@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 public abstract class Block {
     // Constants
     protected final int MIN_HEIGHT;
@@ -9,9 +11,8 @@ public abstract class Block {
 
     // Variables
     char[][] dataTable;
-    int width;
-    int length;
-    int[] posTopLeft;
+    HashMap<String,Integer> sizesFromOriginalPos;
+    int[] originalPos;
 
     Block(int minHeight, int maxHeight, int minWidth, int maxWidth, int minDoors, int maxDoors){
         MIN_HEIGHT = minHeight;
@@ -20,8 +21,10 @@ public abstract class Block {
         MAX_WIDTH = maxWidth;
         MIN_DOORS = minDoors;
         MAX_DOORS = maxDoors;
-        posTopLeft = new int[2];
-        width = 0;
-        length = 0;
+        originalPos = new int[2];
+        generate();
     };
+
+    public void generate() {};
+    public void generate(int X, int Y, String direction, HashMap<String,Integer> space) {};
 }
