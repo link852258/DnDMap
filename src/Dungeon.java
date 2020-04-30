@@ -21,6 +21,11 @@ public class Dungeon {
         Block b = generateBlock();
         for (int f = 0; f < nbOfRooms-1; f++) {
             // Generate other blocks
+            if(Math.random() <= 0.5) {
+                // Room collée
+            } else {
+                // L'autre genre de room à l'autre bout
+            };
         }
     };
 
