@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class Block {
@@ -13,6 +14,7 @@ public abstract class Block {
     char[][] dataTable;
     HashMap<String,Integer> sizesFromOriginalPos;
     int[] originalPos;
+    Door[] doors;
 
     Block(int minHeight, int maxHeight, int minWidth, int maxWidth, int minDoors, int maxDoors){
         MIN_HEIGHT = minHeight;
@@ -22,9 +24,20 @@ public abstract class Block {
         MIN_DOORS = minDoors;
         MAX_DOORS = maxDoors;
         originalPos = new int[2];
-        generate();
+        doors = new Door[randomInt(MIN_DOORS, MAX_DOORS)];
     };
 
-    public void generate() {};
-    public void generate(int X, int Y, String direction, HashMap<String,Integer> space) {};
+    // Functions
+    public int randomInt(int min, int max) {
+        return (int)(Math.random() * (max - min + 1)) + min;
+    }
+
+    public void generate() {
+        // TODO - Randomize sizes and generate square block
+        // TODO - Generate doors
+    };
+
+    public void generate(int X, int Y, String direction, HashMap<String,Integer> space) {
+        // TODO - Do after default generation
+    };
 }

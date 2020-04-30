@@ -5,7 +5,7 @@ public class Dungeon {
     private static final int MIN_NB_OF_ROOMS = 3;
     private static final int MAX_NB_OF_ROOMS = 10;
     private static final String DUNGEON_NAME = "Default";
-    private static final String DUNGEON_TYPE = "Flat";
+    private static final String DUNGEON_TYPE = "2D";
 
     // Variables
     char[][] dataTable;
@@ -18,33 +18,33 @@ public class Dungeon {
 
     public void generateDungeon() {
         int nbOfRooms = randomInt(MIN_NB_OF_ROOMS, MAX_NB_OF_ROOMS);
-        Block b = generateBlock();
+        Block b = generateFirstBlock();
         for (int f = 0; f < nbOfRooms-1; f++) {
             // Generate other blocks
             if(Math.random() <= 0.5) {
-                // Room collée
+                // TODO - Generate Room adjacent to Door
             } else {
-                // L'autre genre de room à l'autre bout
+                // TODO - Generate Room at a random position and then generate Passage to it
             };
         }
     };
 
-    public Block generateBlock() {
-        return new Room();
+    public Block generateFirstBlock() {
+        Block b = new Room();
+        b.generate();
+        return b;
     };
 
     public Block generateBlock(String type, int X, int Y, String direction) {
         Block b;
         // Micro factory
         switch (type) {
-            case "room":
-                b = new Room();
             case "passage":
                 b = new Passage();
             default:
                 b = new Room();
         }
-        // Check available space
+        // Check for available space
         HashMap<String,Integer> space = scanForSpace(b.MAX_WIDTH, b.MAX_HEIGHT, X, Y);
         // Generate room according to available space
         b.generate(X, Y, direction, space);
@@ -93,6 +93,6 @@ public class Dungeon {
     };
 
     public void bakeIntoDungeon(Block b) {
-
+        // TODO - Apply Block's dataTable data to Dungeon's dataTable at it's right position
     };
 }
