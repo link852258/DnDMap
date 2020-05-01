@@ -13,8 +13,10 @@ public abstract class Block {
     // Variables
     char[][] dataTable;
     HashMap<String,Integer> sizesFromOriginalPos;
-    int[] originalPos;
+    int[] posTopLeft;
     Door[] doors;
+    int width;
+    int height;
 
     Block(int minHeight, int maxHeight, int minWidth, int maxWidth, int minDoors, int maxDoors){
         MIN_HEIGHT = minHeight;
@@ -23,8 +25,10 @@ public abstract class Block {
         MAX_WIDTH = maxWidth;
         MIN_DOORS = minDoors;
         MAX_DOORS = maxDoors;
-        originalPos = new int[2];
+        posTopLeft = new int[2];
         doors = new Door[randomInt(MIN_DOORS, MAX_DOORS)];
+        width = randomInt(MIN_WIDTH, MAX_WIDTH);
+        height = randomInt(MIN_WIDTH, MAX_WIDTH);
     };
 
     // Functions
@@ -32,12 +36,25 @@ public abstract class Block {
         return (int)(Math.random() * (max - min + 1)) + min;
     }
 
-    public void generate() {
-        // TODO - Randomize sizes and generate square block
+    // Generation for original room
+    public void generateFirst() {
+        // Set original position
+        this.posTopLeft[0] = 201;
+        this.posTopLeft[1] = 200 + ((height/2) + 1); // TO TEST POSITION
         // TODO - Generate doors
+        // Generate it's first entry door on [200, 200]
+        doors[0] = new Door(200, 200, "left");
+        int doorNb = doors.length;
+        for (int x = 1; x < doorNb; x++) {
+            doors[x] = new Door(true, this.posTopLeft[0], this.posTopLeft[1], width, height);
+        }
     };
 
     public void generate(int X, int Y, String direction, HashMap<String,Integer> space) {
         // TODO - Do after default generation
+    };
+
+    public void bakeIntoDataTable(Block b) {
+        // TODO - Apply to the Block's dataTable
     };
 }

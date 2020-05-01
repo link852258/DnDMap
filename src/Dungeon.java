@@ -31,7 +31,7 @@ public class Dungeon {
 
     public Block generateFirstBlock() {
         Block b = new Room();
-        b.generate();
+        b.generateFirst();
         return b;
     };
 
@@ -51,7 +51,7 @@ public class Dungeon {
         // Add generated block to the blockMap
         blockMap.put(blockMap.size(), b);
         // Immediately draw it into the dataTable
-        this.bakeIntoDungeon(b);
+        this.bakeIntoDataTable(b);
         return b;
     };
 
@@ -92,7 +92,7 @@ public class Dungeon {
         return space;
     };
 
-    public void bakeIntoDungeon(Block b) {
+    public void bakeIntoDataTable(Block b) {
         // TODO - Apply Block's dataTable data to Dungeon's dataTable at it's right position
     };
 }
