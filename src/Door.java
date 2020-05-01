@@ -17,10 +17,8 @@ public class Door {
         double rand = Math.random();
 
         // Make sure if it's the first room that the door isn't spawned on the left side
-        if (isFirstRoom && rand <= 0.25) {
-            do {
-                rand = Math.random();
-            } while (rand <= 0.25);
+        while (isFirstRoom && rand <= 0.25) {
+            rand = Math.random();
         }
 
         // Generate the door on the Block's face

@@ -19,21 +19,21 @@ public class Dungeon {
     public void generateDungeon() {
         int nbOfRooms = randomInt(MIN_NB_OF_ROOMS, MAX_NB_OF_ROOMS);
         Block b = generateFirstBlock();
-        for (int f = 0; f < nbOfRooms-1; f++) {
+        for (int f = 1; f < nbOfRooms; f++) {
             // Generate other blocks
             if(Math.random() <= 0.5) {
                 // TODO - Generate Room adjacent to Door
             } else {
                 // TODO - Generate Room at a random position and then generate Passage to it
-            };
+            }
         }
-    };
+    }
 
     public Block generateFirstBlock() {
         Block b = new Room();
         b.generateFirst();
         return b;
-    };
+    }
 
     public Block generateBlock(String type, int X, int Y, String direction) {
         Block b;
@@ -53,7 +53,7 @@ public class Dungeon {
         // Immediately draw it into the dataTable
         this.bakeIntoDataTable(b);
         return b;
-    };
+    }
 
     public HashMap<String,Integer> scanForSpace(int maxWidth, int maxHeight, int X, int Y) {
         HashMap<String,Integer> space = new HashMap<String,Integer>();
@@ -61,7 +61,7 @@ public class Dungeon {
         // Scan RIGHT
         do {
             currentSpace++;
-        } while (dataTable[X+currentSpace+2][Y] != 'F' || currentSpace <= maxWidth);
+        } while (dataTable[X+currentSpace+2][Y] != 'F' && currentSpace <= maxWidth);
         // Add to Map
         space.put("right", currentSpace);
         currentSpace = 0;
@@ -69,7 +69,7 @@ public class Dungeon {
         // Scan LEFT
         do {
             currentSpace++;
-        } while (dataTable[X-currentSpace-2][Y] != 'F' || currentSpace <= maxWidth);
+        } while (dataTable[X-currentSpace-2][Y] != 'F' && currentSpace <= maxWidth);
         // Add to Map
         space.put("left", currentSpace);
         currentSpace = 0;
@@ -77,7 +77,7 @@ public class Dungeon {
         // Scan DOWN
         do {
             currentSpace++;
-        } while (dataTable[X][Y+currentSpace+2] != 'F' || currentSpace <= maxHeight);
+        } while (dataTable[X][Y+currentSpace+2] != 'F' && currentSpace <= maxHeight);
         // Add to Map
         space.put("down", currentSpace);
         currentSpace = 0;
@@ -85,14 +85,14 @@ public class Dungeon {
         // Scan UP
         do {
             currentSpace++;
-        } while (dataTable[X][Y-currentSpace-2] != 'F' || currentSpace <= maxHeight);
+        } while (dataTable[X][Y-currentSpace-2] != 'F' && currentSpace <= maxHeight);
         // Add to Map
         space.put("up", currentSpace);
 
         return space;
-    };
+    }
 
     public void bakeIntoDataTable(Block b) {
         // TODO - Apply Block's dataTable data to Dungeon's dataTable at it's right position
-    };
+    }
 }

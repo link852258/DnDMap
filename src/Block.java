@@ -29,7 +29,7 @@ public abstract class Block {
         doors = new Door[randomInt(MIN_DOORS, MAX_DOORS)];
         width = randomInt(MIN_WIDTH, MAX_WIDTH);
         height = randomInt(MIN_WIDTH, MAX_WIDTH);
-    };
+    }
 
     // Functions
     public int randomInt(int min, int max) {
@@ -48,13 +48,13 @@ public abstract class Block {
         for (int x = 1; x < doorNb; x++) {
             doors[x] = new Door(true, this.posTopLeft[0], this.posTopLeft[1], width, height);
         }
-    };
+    }
 
     public void generate(int X, int Y, String direction, HashMap<String,Integer> space) {
         // TODO - Do after default generation
-    };
+    }
 
     public void bakeIntoDataTable(Block b) {
         // TODO - Apply to the Block's dataTable
-    };
+    }
 }
