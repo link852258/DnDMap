@@ -1,3 +1,4 @@
+
 import java.util.HashMap;
 
 public class Dungeon {
@@ -12,6 +13,19 @@ public class Dungeon {
     HashMap<Integer,Block> blockMap;
 
     // Functions
+    public Dungeon(int width, int height){
+        dataTable = new char[width][height];
+        this.fillDataTable();
+    }
+
+    public void fillDataTable(){
+        for(int i = 0; i < dataTable.length; i++){
+            for(int j=0; j < dataTable[0].length; j++){
+                dataTable[i][j]='W';
+            }
+        }
+    }
+
     public int randomInt(int min, int max) {
         return (int)(Math.random() * (max - min + 1)) + min;
     }
@@ -94,5 +108,25 @@ public class Dungeon {
 
     public void bakeIntoDataTable(Block b) {
         // TODO - Apply Block's dataTable data to Dungeon's dataTable at it's right position
+        // Will maybe work?
+        for(int X =0; X< b.dataTable.length; X++){
+            for (int Y =0; Y< b.dataTable[0].length; Y++){
+                dataTable[b.posTopLeft[0]+X][b.posTopLeft[1]+Y] = b.dataTable[X][Y];
+            }
+        }
+        for(int X =0; X< b.doors.length; X++){
+            dataTable[b.doors[X].pos[0]][b.doors[X].pos[1]] = 'D';
+        }
+    }
+
+    //diplay the Map as letters
+    public void display(){
+        //TODO - Display pixels instead of letters
+        for(int i = 0; i<dataTable.length;i++){
+            for(int j=0; j<dataTable[0].length;j++){
+                System.out.print(dataTable[i][j]);
+            }
+            System.out.println();
+        }
     }
 }
