@@ -1,8 +1,13 @@
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
-public class Dungeon {
+public class Dungeon extends JPanel {
     // Constants
+    private final int WIDTH;
+    private final int HEIGHT;
     private static final int MIN_NB_OF_ROOMS = 3;
     private static final int MAX_NB_OF_ROOMS = 10;
     private static final String DUNGEON_NAME = "Default";
@@ -14,7 +19,9 @@ public class Dungeon {
 
     // Functions
     public Dungeon(int width, int height){
-        dataTable = new char[width][height];
+        WIDTH = width;
+        HEIGHT = height;
+        dataTable = new char[WIDTH][HEIGHT];
         this.fillDataTable();
     }
 
@@ -119,14 +126,43 @@ public class Dungeon {
         }
     }
 
-    //diplay the Map as letters
-    public void display(){
-        //TODO - Display pixels instead of letters
+    //diplay the Map as pixel
+    public void paintComponent(Graphics g){
+        //TODO vérifié qu'une salle soit bien rendu
+        super.paintComponent(g);
+        BufferedImage bi = new BufferedImage(dataTable.length,dataTable[0].length, BufferedImage.TYPE_INT_RGB);
+        Image image;
         for(int i = 0; i<dataTable.length;i++){
             for(int j=0; j<dataTable[0].length;j++){
-                System.out.print(dataTable[i][j]);
+                if(dataTable[i][j]=='W')
+                    bi.setRGB(j,i,new Color(0,0,0).getRGB());
+                else if(dataTable[i][j]=='F')
+                    bi.setRGB(j,i,new Color(255,0,0).getRGB());
             }
-            System.out.println();
+        }
+        image = bi.getScaledInstance(HEIGHT*20,WIDTH*20,Image.SCALE_SMOOTH);
+        ((Graphics2D)g).drawImage(image,50,50,this);
+
+        //Create the line on the map
+        bi = new BufferedImage(HEIGHT*20,WIDTH*20, BufferedImage.TYPE_INT_ARGB);
+        for(int i = 0; i<HEIGHT*20;i++){
+            for(int j=0; j<WIDTH*20;j++){
+                if(i%20==0)
+                    bi.setRGB(j,i,new Color(0,0,255).getRGB());
+                if(j%20==0)
+                    bi.setRGB(j,i,new Color(0,0,255).getRGB());
+            }
+        }
+
+        ((Graphics2D)g).drawImage(bi,50,50,this);
+    }
+
+    //diplay the Map as letters
+    public void bakeTestRoom(){
+        for(int i = 0; i<5;i++){
+            for(int j=0; j<5;j++){
+                dataTable[i+10][j+10] = 'F';
+            }
         }
     }
 }
