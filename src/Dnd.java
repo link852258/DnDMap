@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Dnd {
-
     public static void main(String[] args){
         Dungeon d = new Dungeon(50,50,10);
         JFrame frame = new JFrame("DnDMap");

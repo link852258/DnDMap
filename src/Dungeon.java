@@ -31,7 +31,7 @@ public class Dungeon extends JPanel {
         // Variables
         scaleNumber = scale;
         dataTable = new char[MAX_NB_OF_ROOMS*20][MAX_NB_OF_ROOMS*20];
-        blockMap = new HashMap<Integer, Block>();
+        blockMap = new HashMap<>();
         firstX = MAX_NB_OF_ROOMS*20;
         lastX = 0;
         firstY = MAX_NB_OF_ROOMS*20;
@@ -90,7 +90,7 @@ public class Dungeon extends JPanel {
     }
 
     public HashMap<String,Integer> scanForSpace(int maxWidth, int maxHeight, int X, int Y) {
-        HashMap<String,Integer> space = new HashMap<String,Integer>();
+        HashMap<String,Integer> space = new HashMap<>();
         int currentSpace = 0;
         // Scan RIGHT
         do {
@@ -154,11 +154,11 @@ public class Dungeon extends JPanel {
         }
 
         // Scale up the image for easier viewing and to draw a grid with transparency on top of the dungeon
-        image = bi.getScaledInstance(HEIGHT * scaleNumber,WIDTH * scaleNumber, Image.SCALE_SMOOTH);
-        ((Graphics2D)g).drawImage(image,0,0,this);
-        bi = new BufferedImage(HEIGHT * scaleNumber,WIDTH * scaleNumber, BufferedImage.TYPE_INT_ARGB);
-        for(int X = 0; X < HEIGHT * scaleNumber; X++){
-            for(int Y = 0; Y < WIDTH * scaleNumber; Y++){
+        image = bi.getScaledInstance(dataTable.length * scaleNumber,dataTable[0].length * scaleNumber, Image.SCALE_SMOOTH);
+        g.drawImage(image,0,0,this);
+        bi = new BufferedImage(dataTable.length * scaleNumber,dataTable[0].length * scaleNumber, BufferedImage.TYPE_INT_ARGB);
+        for(int X = 0; X < dataTable.length * scaleNumber; X++){
+            for(int Y = 0; Y < dataTable[0].length * scaleNumber; Y++){
                 if((X % scaleNumber) == 0)
                     bi.setRGB(Y, X, RGB_GRID);
                 if((Y % scaleNumber) == 0)
@@ -166,7 +166,7 @@ public class Dungeon extends JPanel {
             }
         }
 
-        ((Graphics2D)g).drawImage(bi,0,0,this);
+        g.drawImage(bi,0,0,this);
     }
 
     private void checkDungeonSizeDuringScan(int X, int Y) {
