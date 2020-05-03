@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Dungeon extends JPanel {
@@ -52,15 +53,50 @@ public class Dungeon extends JPanel {
     }
 
     public void generateDungeon() {
-        int nbOfRooms = randomInt(MIN_NB_OF_ROOMS, MAX_NB_OF_ROOMS);
+        // Randomize the amount of rooms in the dungeon
+        int wantedNbOfRooms = randomInt(MIN_NB_OF_ROOMS, MAX_NB_OF_ROOMS);
+
+        // Generate the first block
         Block b = generateFirstBlock();
-        for (int f = 1; f < nbOfRooms; f++) {
-            // Generate other blocks
-            //if(Math.random() <= 0.6) {
-                // TODO - Generate Room adjacent to Door
-            //} else {
-                // TODO LATER - Generate Room at a random position and then generate Passage to it
-            //}
+
+        // Create and populate list of unused doors
+        ArrayList<Door> unusedDoorQueue = new ArrayList<>();
+        this.populateDoorQueue(b, unusedDoorQueue);
+
+        // Generate other blocks
+        int currentNbOfRooms = 1;
+        int rand;
+        Door d;
+        HashMap<String, Integer> space;
+        do {
+            boolean roomGenerated = false;
+            do {
+                // Get a random door from the queue
+                rand = randomInt(0, unusedDoorQueue.size() - 1);
+                d = unusedDoorQueue.get(rand);
+                // Check if the spot where the new room would be generate already has floor
+                if (this.dataTable[d.nextRoomPosX][d.nextRoomPosY] != 'F') {
+                    b = this.generateBlock("room", d.nextRoomPosX, d.nextRoomPosY, d, d.direction);
+
+                    // Populate the door queue with the new unused doors
+                    this.populateDoorQueue(b, unusedDoorQueue);
+
+                    // Generation completed
+                    currentNbOfRooms++;
+                    roomGenerated = true;
+                } else {
+                    // Assume the door is taken and remove from queue
+                    d.isLinked = true;
+                    unusedDoorQueue.remove(d);
+                }
+            } while (!roomGenerated);
+        } while (currentNbOfRooms < wantedNbOfRooms && unusedDoorQueue.size() != 0);
+    } // TODO LATER - Generate Room at a random position and then generate Passage to it
+
+    private void populateDoorQueue(Block b, ArrayList<Door> unusedDoorQueue) {
+        for (int X = 1; X < b.doors.length; X++) {
+            if (!b.doors[X].isLinked)
+                unusedDoorQueue.add(b.doors[X]);
         }
     }
 
@@ -72,7 +108,7 @@ public class Dungeon extends JPanel {
         return b;
     }
 
-    public Block generateBlock(String type, int X, int Y, String direction) {
+    public Block generateBlock(String type, int X, int Y, Door d, String direction) {
         Block b;
         // Micro factory
         switch (type) {
@@ -84,7 +120,7 @@ public class Dungeon extends JPanel {
         // Check for available space
         HashMap<String,Integer> space = scanForSpace(b.MAX_WIDTH, b.MAX_HEIGHT, X, Y);
         // Generate room according to available space
-        b.generate(X, Y, direction, space);
+        b.generate(X, Y, d, direction, space);
         // Add generated block to the blockMap
         this.blockMap.put(blockMap.size(), b);
         // Immediately draw it into the dataTable
@@ -133,11 +169,11 @@ public class Dungeon extends JPanel {
         // TODO - NEEDS TO BE TESTED
         for (int X = 0; X < b.dataTable.length; X++){
             for (int Y = 0; Y < b.dataTable[0].length; Y++) {
-                this.dataTable[b.posTopLeft[0]+X][b.posTopLeft[1]+Y] = b.dataTable[X][Y];
+                this.dataTable[b.posTopLeftX+X][b.posTopLeftY+Y] = b.dataTable[X][Y];
             }
         }
         for (int X = 0; X < b.doors.length; X++){
-            this.dataTable[b.doors[X].pos[0]][b.doors[X].pos[1]] = 'D';
+            this.dataTable[b.doors[X].posX][b.doors[X].posY] = 'D';
         }
     }
 
@@ -186,16 +222,5 @@ public class Dungeon extends JPanel {
             this.firstY = Y;
         if (Y > this.lastY)
             this.lastY = Y;
-    }
-
-    // TODO - TO REMOVE AFTER TESTING
-    // Generate a default fake Block on the dataTable for testing
-    public void bakeTestRoom(){
-        blockMap.put(1000,new Room());
-        for(int i = 0; i < 5; i++){
-            for(int j = 0; j < 5; j++){
-                this.dataTable[i+10][j+10] = 'F';
-            }
-        }
     }
 }
