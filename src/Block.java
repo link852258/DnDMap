@@ -11,7 +11,6 @@ public abstract class Block {
 
     // Variables
     public char[][] dataTable;
-    HashMap<String,Integer> sizesFromOriginalPos;
     int[] posTopLeft;
     Door[] doors;
     int width;
@@ -25,9 +24,9 @@ public abstract class Block {
         MIN_DOORS = minDoors;
         MAX_DOORS = maxDoors;
         posTopLeft = new int[2];
-        doors = new Door[randomInt(MIN_DOORS, MAX_DOORS)];
         width = randomInt(MIN_WIDTH, MAX_WIDTH);
-        height = randomInt(MIN_WIDTH, MAX_WIDTH);
+        height = randomInt(MIN_HEIGHT, MAX_HEIGHT);
+        dataTable = new char[width][height];
     }
 
     // Functions
@@ -38,14 +37,16 @@ public abstract class Block {
     // Generation for original room
     public void generateFirst() {
         // Set original position
-        this.posTopLeft[0] = 201;
-        this.posTopLeft[1] = 200 + ((height/2) + 1); // TO TEST POSITION
+        int rand = this.randomInt(MIN_DOORS+2, MAX_DOORS+1);
+        this.doors = new Door[rand];
+        this.posTopLeft[0] = 51;
+        this.posTopLeft[1] = 50 - (Math.floorDiv(this.height, 2)); // TO TEST POSITION
         // Generate it's first entry door on [200, 200]
-        doors[0] = new Door(200, 200, "left");
+        this.doors[0] = new Door(50, 50, "left");
         // Generate other doors
-        int doorNb = doors.length;
+        int doorNb = this.doors.length;
         for (int X = 1; X < doorNb; X++) {
-            doors[X] = new Door(true, this.posTopLeft[0], this.posTopLeft[1], width, height);
+            doors[X] = new Door(true, this.posTopLeft[0], this.posTopLeft[1], this.width, this.height);
         }
         // Bake Block into its own dataTable
         this.bakeIntoDataTable();
@@ -55,14 +56,14 @@ public abstract class Block {
         // TODO - Do after default generation
         // Calculate available space
         int availableWidth = space.get("left") + space.get("right");
-        if (availableWidth > MAX_WIDTH)
-            availableWidth = MAX_WIDTH;
+        if (availableWidth > this.MAX_WIDTH)
+            availableWidth = this.MAX_WIDTH;
         int availableHeight = space.get("up") + space.get("down");
-        if (availableHeight > MAX_HEIGHT)
-            availableHeight = MAX_HEIGHT;
+        if (availableHeight > this.MAX_HEIGHT)
+            availableHeight = this.MAX_HEIGHT;
         // Randomize sizes
-        int randWidth = randomInt(MIN_WIDTH, availableWidth);
-        int randHeight = randomInt(MIN_HEIGHT, availableHeight);
+        int randWidth = randomInt(this.MIN_WIDTH, availableWidth);
+        int randHeight = randomInt(this.MIN_HEIGHT, availableHeight);
         // Randomize position of originating door
         int originDoorPos;
         int minimum;
@@ -80,13 +81,14 @@ public abstract class Block {
                 maximum = randWidth;
             originDoorPos = randomInt(minimum, maximum);
         }
+        this.doors = new Door[randomInt(MIN_DOORS, MAX_DOORS)];
         this.posTopLeft[0] = 5;
     }
 
     public void bakeIntoDataTable() {
-        for (int X = 0; X < width; X++) {
-            for (int Y = 0; Y < height; Y++) {
-                this.dataTable[this.posTopLeft[0]][this.posTopLeft[1]] = 'F';
+        for (int X = 0; X < this.width; X++) {
+            for (int Y = 0; Y < this.height; Y++) {
+                this.dataTable[X][Y] = 'F';
             }
         }
     }

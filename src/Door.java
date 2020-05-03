@@ -26,30 +26,30 @@ public class Door {
         // Generate the door on the Block's face
         if (rand <= 0.25) { // left
             this.direction = "left";
-            rand2 = randomInt(0, height); // Takes a random position on the Block's left face
+            rand2 = randomInt(0, height - 1); // Takes a random position on the Block's left face
             this.pos[0] = X - 1; // One before Block floor
             this.pos[1] = Y + rand2;
             this.nextRoomPos[0] = X - 2;
             this.nextRoomPos[1] = Y + rand2;
         } else if (rand <= 0.5) { // up
             direction = "up";
-            rand2 = randomInt(0, width);
+            rand2 = randomInt(0, width - 1);
             this.pos[0] = X + rand2;
             this.pos[1] = Y - 1;
             this.nextRoomPos[0] = X + rand2;
             this.nextRoomPos[1] = Y - 2;
         } else if (rand <= 0.75) { // right
             direction = "right";
-            rand2 = randomInt(0, height);
-            this.pos[0] = X + width + 1;
+            rand2 = randomInt(0, height - 1);
+            this.pos[0] = X + width;
             this.pos[1] = Y + rand2;
             this.nextRoomPos[0] = X + width + 2;
             this.nextRoomPos[1] = Y + rand2;
         } else { // down
             direction = "down";
-            rand2 = randomInt(0, width);
+            rand2 = randomInt(0, width - 1);
             this.pos[0] = X + rand2;
-            this.pos[1] = Y + height + 1;
+            this.pos[1] = Y + height;
             this.nextRoomPos[0] = X + rand2;
             this.nextRoomPos[1] = Y + height + 2;
         }

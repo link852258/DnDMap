@@ -1,4 +1,3 @@
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -11,8 +10,9 @@ public class Dungeon extends JPanel {
     private static final String DUNGEON_NAME = "Default";
     private static final String DUNGEON_TYPE = "2D";
     private static final int RGB_FLOOR = new Color(98, 137, 90).getRGB();
-    private static final int RGB_GRID = new Color(120,120,120).getRGB();
+    private static final int RGB_GRID = new Color(45, 45, 45).getRGB();
     private static final int RGB_DOOR = new Color(151, 97, 67).getRGB();
+    private static final int DUNGEON_SIZE_RATIO = 40;
 
     // Variables
     private char[][] dataTable;
@@ -31,11 +31,11 @@ public class Dungeon extends JPanel {
 
         // Variables
         scaleNumber = scale;
-        dataTable = new char[MAX_NB_OF_ROOMS*20][MAX_NB_OF_ROOMS*20];
+        dataTable = new char[MAX_NB_OF_ROOMS*DUNGEON_SIZE_RATIO][MAX_NB_OF_ROOMS*DUNGEON_SIZE_RATIO];
         blockMap = new HashMap<>();
-        firstX = MAX_NB_OF_ROOMS*20;
+        firstX = MAX_NB_OF_ROOMS * DUNGEON_SIZE_RATIO;
         lastX = 0;
-        firstY = MAX_NB_OF_ROOMS*20;
+        firstY = MAX_NB_OF_ROOMS * DUNGEON_SIZE_RATIO;
         lastY = 0;
     }
 
@@ -56,17 +56,19 @@ public class Dungeon extends JPanel {
         Block b = generateFirstBlock();
         for (int f = 1; f < nbOfRooms; f++) {
             // Generate other blocks
-            if(Math.random() <= 0.5) {
+            //if(Math.random() <= 0.6) {
                 // TODO - Generate Room adjacent to Door
-            } else {
-                // TODO - Generate Room at a random position and then generate Passage to it
-            }
+            //} else {
+                // TODO LATER - Generate Room at a random position and then generate Passage to it
+            //}
         }
     }
 
     public Block generateFirstBlock() {
         Block b = new Room();
         b.generateFirst();
+        this.bakeIntoDataTable(b);
+        blockMap.put(blockMap.size(), b);
         return b;
     }
 
@@ -129,12 +131,12 @@ public class Dungeon extends JPanel {
 
     public void bakeIntoDataTable(Block b) {
         // TODO - NEEDS TO BE TESTED
-        for(int X = 0; X < b.dataTable.length; X++){
+        for (int X = 0; X < b.dataTable.length; X++){
             for (int Y = 0; Y < b.dataTable[0].length; Y++) {
                 this.dataTable[b.posTopLeft[0]+X][b.posTopLeft[1]+Y] = b.dataTable[X][Y];
             }
         }
-        for(int X = 0; X< b.doors.length; X++){
+        for (int X = 0; X < b.doors.length; X++){
             this.dataTable[b.doors[X].pos[0]][b.doors[X].pos[1]] = 'D';
         }
     }
@@ -149,10 +151,10 @@ public class Dungeon extends JPanel {
             for (int X = 0; X < dataTable.length; X++) {
                 for (int Y = 0; Y < dataTable[0].length; Y++) {
                     if (dataTable[X][Y] == 'F') {
-                        bi.setRGB(Y, X, RGB_FLOOR);
+                        bi.setRGB(X, Y, RGB_FLOOR);
                         this.checkDungeonSizeDuringScan(X, Y);
                     } else if (dataTable[X][Y] == 'D') {
-                        bi.setRGB(Y, X, RGB_DOOR);
+                        bi.setRGB(X, Y, RGB_DOOR);
                         this.checkDungeonSizeDuringScan(X, Y);
                     }
                 }
@@ -165,9 +167,9 @@ public class Dungeon extends JPanel {
             for (int X = 0; X < dataTable.length * scaleNumber; X++) {
                 for (int Y = 0; Y < dataTable[0].length * scaleNumber; Y++) {
                     if ((X % scaleNumber) == 0)
-                        bi.setRGB(Y, X, RGB_GRID);
+                        bi.setRGB(X, Y, RGB_GRID);
                     if ((Y % scaleNumber) == 0)
-                        bi.setRGB(Y, X, RGB_GRID);
+                        bi.setRGB(X, Y, RGB_GRID);
                 }
             }
 
