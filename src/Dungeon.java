@@ -75,15 +75,16 @@ public class Dungeon extends JPanel {
 
                     // Generation completed
                     currentNbOfRooms++;
-                    unusedDoorQueue.remove(d);
+
                     roomGenerated = true;
                 } else {
                     // Assume the door is taken and remove from queue
-                    d.isLinked = true;
-                    unusedDoorQueue.remove(d);
+                    // d.isLinked = true;
                 }
-            } while (!roomGenerated);
+                unusedDoorQueue.remove(rand);
+            } while (!roomGenerated && unusedDoorQueue.size() > 0);
         } while (currentNbOfRooms < wantedNbOfRooms && unusedDoorQueue.size() > 0);
+
         // Delete all remaining non-linked doors
         for (int X = 0; X < blockMap.size(); X++) {
             blockMap.get(X).deleteRemainingDoors();
@@ -93,6 +94,7 @@ public class Dungeon extends JPanel {
         for (int X = 0; X < blockMap.size(); X++) {
             this.bakeIntoDataTable(blockMap.get(X));
         }
+
     } // TODO LATER - Generate Room at a random position and then generate Passage to it
 
     public void fillDataTable(){
@@ -193,27 +195,45 @@ public class Dungeon extends JPanel {
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         if (!blockMap.isEmpty()) {
-            BufferedImage bi = new BufferedImage(dataTable.length, dataTable[0].length, BufferedImage.TYPE_INT_RGB);
-            Image image;
-            // Draw the dungeon
+            // Scan the dungeon for sizes
             for (int X = 0; X < dataTable.length; X++) {
                 for (int Y = 0; Y < dataTable[0].length; Y++) {
                     if (dataTable[X][Y] == 'F') {
-                        bi.setRGB(X, Y, RGB_FLOOR);
                         this.checkDungeonSizeDuringScan(X, Y);
                     } else if (dataTable[X][Y] == 'D') {
-                        bi.setRGB(X, Y, RGB_DOOR);
                         this.checkDungeonSizeDuringScan(X, Y);
                     }
                 }
             }
 
+            // Draw the dungeon
+            Image image;
+            int counterX = 0;
+            int counterY = 0;
+            int imageWidth = this.lastX - this.firstX;
+            int imageHeight = this.lastY - this.firstY;
+            BufferedImage bi = new BufferedImage(imageWidth + 10, imageHeight + 10, BufferedImage.TYPE_INT_RGB);
+            for (int X = this.firstX - 5; X < this.lastX + 5; X++) {
+                for (int Y = this.firstY - 5; Y < this.lastY + 5; Y++) {
+                    if (dataTable[X][Y] == 'F') {
+                        bi.setRGB(counterX, counterY, RGB_FLOOR);
+                    } else if (dataTable[X][Y] == 'D') {
+                        bi.setRGB(counterX, counterY, RGB_DOOR);
+                    }
+                    counterY++;
+                }
+                counterY = 0;
+                counterX++;
+            }
+
             // Scale up the image for easier viewing and to draw a grid with transparency on top of the dungeon
-            image = bi.getScaledInstance(dataTable.length * scaleNumber, dataTable[0].length * scaleNumber, Image.SCALE_SMOOTH);
+            image = bi.getScaledInstance((imageWidth + 10) * scaleNumber, (imageHeight + 10) * scaleNumber, Image.SCALE_SMOOTH);
+            // Clip out anything unnecessary
+            // g.setClip(this.firstX - 5 * scaleNumber, this.firstY * scaleNumber, imageWidth * scaleNumber, imageHeight * scaleNumber);
             g.drawImage(image, 0, 0, this);
-            bi = new BufferedImage(dataTable.length * scaleNumber, dataTable[0].length * scaleNumber, BufferedImage.TYPE_INT_ARGB);
-            for (int X = 0; X < dataTable.length * scaleNumber; X++) {
-                for (int Y = 0; Y < dataTable[0].length * scaleNumber; Y++) {
+            bi = new BufferedImage((imageWidth + 10) * scaleNumber, (imageHeight + 10) * scaleNumber, BufferedImage.TYPE_INT_ARGB);
+            for (int X = 0; X < (imageWidth + 10) * scaleNumber; X++) {
+                for (int Y = 0; Y < (imageHeight + 10) * scaleNumber; Y++) {
                     if ((X % scaleNumber) == 0)
                         bi.setRGB(X, Y, RGB_GRID);
                     if ((Y % scaleNumber) == 0)

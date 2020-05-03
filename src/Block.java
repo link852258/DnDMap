@@ -149,6 +149,5 @@ public abstract class Block {
             if (!doors.get(X).isLinked)
                 doors.remove(X);
         }
-
     }
 }
