@@ -11,7 +11,8 @@ public class Dungeon extends JPanel {
     private static final String DUNGEON_NAME = "Default";
     private static final String DUNGEON_TYPE = "2D";
     private static final int RGB_FLOOR = new Color(98, 137, 90).getRGB();
-    private static final int RGB_GRID = new Color(255,255,255).getRGB();
+    private static final int RGB_GRID = new Color(120,120,120).getRGB();
+    private static final int RGB_DOOR = new Color(151, 97, 67).getRGB();
 
     // Variables
     private char[][] dataTable;
@@ -129,7 +130,7 @@ public class Dungeon extends JPanel {
     public void bakeIntoDataTable(Block b) {
         // TODO - NEEDS TO BE TESTED
         for(int X = 0; X < b.dataTable.length; X++){
-            for (int Y = 0; Y < b.dataTable[0].length; Y++){
+            for (int Y = 0; Y < b.dataTable[0].length; Y++) {
                 this.dataTable[b.posTopLeft[0]+X][b.posTopLeft[1]+Y] = b.dataTable[X][Y];
             }
         }
@@ -140,49 +141,55 @@ public class Dungeon extends JPanel {
 
     // Display the Dungeon tiles as individual pixels on an image and then scale it up
     public void paintComponent(Graphics g){
-        // TODO - NEEDS TO BE TESTED
         super.paintComponent(g);
-        BufferedImage bi = new BufferedImage(dataTable.length, dataTable[0].length, BufferedImage.TYPE_INT_RGB);
-        Image image;
-        // Draw the dungeon
-        for(int X = 0; X < dataTable.length; X++){
-            for(int Y = 0; Y < dataTable[0].length; Y++){
-                if(dataTable[X][Y] == 'F')
-                    bi.setRGB(Y, X, RGB_FLOOR);
-                    this.checkDungeonSizeDuringScan(X, Y);
+        if (!blockMap.isEmpty()) {
+            BufferedImage bi = new BufferedImage(dataTable.length, dataTable[0].length, BufferedImage.TYPE_INT_RGB);
+            Image image;
+            // Draw the dungeon
+            for (int X = 0; X < dataTable.length; X++) {
+                for (int Y = 0; Y < dataTable[0].length; Y++) {
+                    if (dataTable[X][Y] == 'F') {
+                        bi.setRGB(Y, X, RGB_FLOOR);
+                        this.checkDungeonSizeDuringScan(X, Y);
+                    } else if (dataTable[X][Y] == 'D') {
+                        bi.setRGB(Y, X, RGB_DOOR);
+                        this.checkDungeonSizeDuringScan(X, Y);
+                    }
+                }
             }
-        }
 
-        // Scale up the image for easier viewing and to draw a grid with transparency on top of the dungeon
-        image = bi.getScaledInstance(dataTable.length * scaleNumber,dataTable[0].length * scaleNumber, Image.SCALE_SMOOTH);
-        g.drawImage(image,0,0,this);
-        bi = new BufferedImage(dataTable.length * scaleNumber,dataTable[0].length * scaleNumber, BufferedImage.TYPE_INT_ARGB);
-        for(int X = 0; X < dataTable.length * scaleNumber; X++){
-            for(int Y = 0; Y < dataTable[0].length * scaleNumber; Y++){
-                if((X % scaleNumber) == 0)
-                    bi.setRGB(Y, X, RGB_GRID);
-                if((Y % scaleNumber) == 0)
-                    bi.setRGB(Y, X, RGB_GRID);
+            // Scale up the image for easier viewing and to draw a grid with transparency on top of the dungeon
+            image = bi.getScaledInstance(dataTable.length * scaleNumber, dataTable[0].length * scaleNumber, Image.SCALE_SMOOTH);
+            g.drawImage(image, 0, 0, this);
+            bi = new BufferedImage(dataTable.length * scaleNumber, dataTable[0].length * scaleNumber, BufferedImage.TYPE_INT_ARGB);
+            for (int X = 0; X < dataTable.length * scaleNumber; X++) {
+                for (int Y = 0; Y < dataTable[0].length * scaleNumber; Y++) {
+                    if ((X % scaleNumber) == 0)
+                        bi.setRGB(Y, X, RGB_GRID);
+                    if ((Y % scaleNumber) == 0)
+                        bi.setRGB(Y, X, RGB_GRID);
+                }
             }
-        }
 
-        g.drawImage(bi,0,0,this);
+            g.drawImage(bi, 0, 0, this);
+        }
     }
 
     private void checkDungeonSizeDuringScan(int X, int Y) {
-        if (X < firstX)
+        if (X < this.firstX)
             this.firstX = X;
-        if (X > lastX)
+        if (X > this.lastX)
             this.lastX = X;
-        if (Y < firstY)
-            this.firstX = Y;
-        if (Y > lastY)
+        if (Y < this.firstY)
+            this.firstY = Y;
+        if (Y > this.lastY)
             this.lastY = Y;
     }
 
     // TODO - TO REMOVE AFTER TESTING
     // Generate a default fake Block on the dataTable for testing
     public void bakeTestRoom(){
+        blockMap.put(1000,new Room());
         for(int i = 0; i < 5; i++){
             for(int j = 0; j < 5; j++){
                 this.dataTable[i+10][j+10] = 'F';
