@@ -45,7 +45,7 @@ public class Door {
             rand2 = randomInt(0, height - 1);
             this.posX = X + width;
             this.posY = Y + rand2;
-            this.nextRoomPosX = X + width + 2;
+            this.nextRoomPosX = X + width + 1;
             this.nextRoomPosY = Y + rand2;
         } else { // down
             direction = "down";
@@ -53,7 +53,7 @@ public class Door {
             this.posX = X + rand2;
             this.posY = Y + height;
             this.nextRoomPosX = X + rand2;
-            this.nextRoomPosY = Y + height + 2;
+            this.nextRoomPosY = Y + height + 1;
         }
     }
 

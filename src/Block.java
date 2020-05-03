@@ -1,3 +1,5 @@
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class Block {
@@ -13,7 +15,8 @@ public abstract class Block {
     public char[][] dataTable;
     int posTopLeftX;
     int posTopLeftY;
-    Door[] doors;
+    ArrayList<Door> doors;
+    int doorCount;
     int width;
     int height;
 
@@ -24,6 +27,7 @@ public abstract class Block {
         MAX_WIDTH = maxWidth;
         MIN_DOORS = minDoors;
         MAX_DOORS = maxDoors;
+        doors = new ArrayList<>();
     }
 
     // Functions
@@ -32,23 +36,22 @@ public abstract class Block {
     }
 
     // Generation for original room
-    public void generateFirst() {
+    public void generateFirst(int dungeonSize) {
         // Randomize sizes
         this.width = randomInt(this.MIN_WIDTH, this.MAX_WIDTH);
         this.height = randomInt(this.MIN_HEIGHT, this.MAX_HEIGHT);
         this.dataTable = new char[this.width][this.height];
         // Randomize the amount of doors
-        int rand = this.randomInt(this.MIN_DOORS+2, this.MAX_DOORS+1);
-        this.doors = new Door[rand];
+        this.doorCount = this.randomInt(this.MIN_DOORS+2, this.MAX_DOORS+1);
         // Set Block original position
-        this.posTopLeftX = 51;
-        this.posTopLeftY = 50 - (Math.floorDiv(this.height, 2)); // TO TEST POSITION
+        this.posTopLeftX = dungeonSize/2 + 1;
+        this.posTopLeftY = dungeonSize/2 - (Math.floorDiv(this.height, 2)); // TO TEST POSITION
         // Generate it's first entry door on [200, 200]
-        this.doors[0] = new Door(50, 50, "left");
+        Door d = new Door(dungeonSize / 2, dungeonSize / 2, "left");
+        this.doors.add(d);
         // Generate other doors
-        int doorNb = this.doors.length;
-        for (int X = 1; X < doorNb; X++) {
-            this.doors[X] = new Door(true, this.posTopLeftX, this.posTopLeftY, this.width, this.height);
+        for (int X = 1; X < this.doorCount; X++) {
+            this.doors.add(new Door(true, this.posTopLeftX, this.posTopLeftY, this.width, this.height));
         }
         // Bake Block into its own dataTable
         this.bakeIntoDataTable();
@@ -99,14 +102,14 @@ public abstract class Block {
         this.findTopLeft(X, Y, direction, bias);
 
         // Randomize the amount of doors
-        this.doors = new Door[randomInt(MIN_DOORS, MAX_DOORS)];
+        this.doorCount = randomInt(MIN_DOORS, MAX_DOORS);
 
         // Assign first door with the originating door
-        doors[0] = d;
+        doors.add(d);
 
         // Generate doors keeping in mind the
-        for (int I = 1; I < doors.length; I++)
-            doors[I] = new Door(false, this.posTopLeftX, this.posTopLeftY, this.width, this.height);
+        for (int I = 1; I < doorCount; I++)
+            this.doors.add(new Door(false, this.posTopLeftX, this.posTopLeftY, this.width, this.height));
 
         // Bake Block into its own dataTable
         this.bakeIntoDataTable();
@@ -122,21 +125,30 @@ public abstract class Block {
 
     private void findTopLeft(int X, int Y, String direction, int bias) {
         switch (direction) {
-            case "left": {
+            case "left":
                 posTopLeftX = X - (this.width - 1);
-                posTopLeftY = Y - bias;
-            }
-            case "up": {
-                posTopLeftX = X + bias;
+                posTopLeftY = Y - (bias - 1);
+                break;
+            case "up":
+                posTopLeftX = X - (bias - 1);
                 posTopLeftY = Y - (this.height - 1);
-            }
-            case "right": {
+                break;
+            case "right":
                 posTopLeftX = X;
-                posTopLeftY = Y - bias;
-            }
+                posTopLeftY = Y - (bias - 1);
+                break;
             case "down":
-                posTopLeftX = X - bias;
+                posTopLeftX = X - (bias - 1);
                 posTopLeftY = Y;
+                break;
         }
+    }
+
+    public void deleteRemainingDoors() {
+        for (int X = 1; X < doors.size(); X++) {
+            if (!doors.get(X).isLinked)
+                doors.remove(X);
+        }
+
     }
 }

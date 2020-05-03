@@ -13,7 +13,7 @@ public class Dungeon extends JPanel {
     private static final int RGB_FLOOR = new Color(98, 137, 90).getRGB();
     private static final int RGB_GRID = new Color(45, 45, 45).getRGB();
     private static final int RGB_DOOR = new Color(151, 97, 67).getRGB();
-    private static final int DUNGEON_SIZE_RATIO = 40;
+    private static final int DUNGEON_SIZE_RATIO = 20;
 
     // Variables
     private char[][] dataTable;
@@ -39,14 +39,6 @@ public class Dungeon extends JPanel {
         firstY = MAX_NB_OF_ROOMS * DUNGEON_SIZE_RATIO;
         lastY = 0;
     }
-
-    /*public void fillDataTable(){
-        for(int i = 0; i < dataTable.length; i++){
-            for(int j=0; j < dataTable[0].length; j++){
-                dataTable[i][j]='W';
-            }
-        }
-    }*/
 
     public int randomInt(int min, int max) {
         return (int)(Math.random() * (max - min + 1)) + min;
@@ -83,6 +75,7 @@ public class Dungeon extends JPanel {
 
                     // Generation completed
                     currentNbOfRooms++;
+                    unusedDoorQueue.remove(d);
                     roomGenerated = true;
                 } else {
                     // Assume the door is taken and remove from queue
@@ -90,19 +83,36 @@ public class Dungeon extends JPanel {
                     unusedDoorQueue.remove(d);
                 }
             } while (!roomGenerated);
-        } while (currentNbOfRooms < wantedNbOfRooms && unusedDoorQueue.size() != 0);
+        } while (currentNbOfRooms < wantedNbOfRooms && unusedDoorQueue.size() > 0);
+        // Delete all remaining non-linked doors
+        for (int X = 0; X < blockMap.size(); X++) {
+            blockMap.get(X).deleteRemainingDoors();
+        }
+        // Because of deletion, redrawing the entire scene is required
+        this.fillDataTable();
+        for (int X = 0; X < blockMap.size(); X++) {
+            this.bakeIntoDataTable(blockMap.get(X));
+        }
     } // TODO LATER - Generate Room at a random position and then generate Passage to it
 
+    public void fillDataTable(){
+        for(int X = 0; X < this.dataTable.length; X++){
+            for(int Y = 0; Y < this.dataTable[0].length; Y++){
+                this.dataTable[X][Y] = '0';
+            }
+        }
+    }
+
     private void populateDoorQueue(Block b, ArrayList<Door> unusedDoorQueue) {
-        for (int X = 1; X < b.doors.length; X++) {
-            if (!b.doors[X].isLinked)
-                unusedDoorQueue.add(b.doors[X]);
+        for (int X = 1; X < b.doors.size(); X++) {
+            if (!b.doors.get(X).isLinked)
+                unusedDoorQueue.add(b.doors.get(X));
         }
     }
 
     public Block generateFirstBlock() {
         Block b = new Room();
-        b.generateFirst();
+        b.generateFirst(MAX_NB_OF_ROOMS*DUNGEON_SIZE_RATIO);
         this.bakeIntoDataTable(b);
         blockMap.put(blockMap.size(), b);
         return b;
@@ -114,8 +124,10 @@ public class Dungeon extends JPanel {
         switch (type) {
             case "passage":
                 b = new Passage();
+                break;
             default:
                 b = new Room();
+                break;
         }
         // Check for available space
         HashMap<String,Integer> space = scanForSpace(b.MAX_WIDTH, b.MAX_HEIGHT, X, Y);
@@ -172,8 +184,8 @@ public class Dungeon extends JPanel {
                 this.dataTable[b.posTopLeftX+X][b.posTopLeftY+Y] = b.dataTable[X][Y];
             }
         }
-        for (int X = 0; X < b.doors.length; X++){
-            this.dataTable[b.doors[X].posX][b.doors[X].posY] = 'D';
+        for (int X = 0; X < b.doors.size(); X++){
+            this.dataTable[b.doors.get(X).posX][b.doors.get(X).posY] = 'D';
         }
     }
 
