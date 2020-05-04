@@ -1,14 +1,16 @@
+import GUI.MainFrame;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class Dnd {
     public static void main(String[] args){
-        JFrame frame = new JFrame("DnDMap");
-        Dungeon d = new Dungeon(75,100,5);
-        frame.setSize(1800,900);
-        frame.setLayout(new BorderLayout());
-        frame.add(d,BorderLayout.CENTER);
-        frame.setVisible(true);
+        MainFrame main = new MainFrame(1000,1000);
+        Dungeon d = new Dungeon(950,1000,5);
+        d.setPreferredSize(new Dimension(2000,2000));
+        d.setLayout(new BorderLayout());
         d.generateDungeon();
+        main.addImage(d.draw());
+        main.show();
     }
 }

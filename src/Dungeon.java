@@ -223,8 +223,8 @@ public class Dungeon extends JPanel {
     }
 
     // Display the Dungeon tiles as individual pixels on an image and then scale it up
-    public void paintComponent(Graphics g){
-        super.paintComponent(g);
+    public BufferedImage draw(){
+        //super.paintComponent(g);
         if (!blockMap.isEmpty()) {
             // Scan the dungeon for sizes
             for (int X = 0; X < dataTable.length; X++) {
@@ -243,6 +243,8 @@ public class Dungeon extends JPanel {
             int counterY = 0;
             int imageWidth = this.lastX - this.firstX;
             int imageHeight = this.lastY - this.firstY;
+            BufferedImage combined = new BufferedImage((imageWidth + 10) * scaleNumber, (imageHeight + 10) * scaleNumber, BufferedImage.TYPE_INT_RGB);
+            Graphics g = combined.getGraphics();
             BufferedImage bi = new BufferedImage(imageWidth + 10, imageHeight + 10, BufferedImage.TYPE_INT_RGB);
             for (int X = this.firstX - 5; X < this.lastX + 5; X++) {
                 for (int Y = this.firstY - 5; Y < this.lastY + 5; Y++) {
@@ -273,7 +275,10 @@ public class Dungeon extends JPanel {
             }
 
             g.drawImage(bi, 0, 0, this);
+            g.dispose();
+            return combined;
         }
+        return null;
     }
 
     private void checkDungeonSizeDuringScan(int X, int Y) {
