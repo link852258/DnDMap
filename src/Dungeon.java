@@ -94,8 +94,37 @@ public class Dungeon extends JPanel {
         for (int X = 0; X < blockMap.size(); X++) {
             this.bakeIntoDataTable(blockMap.get(X));
         }
+        for (int X = 0; X < blockMap.size(); X++) {
+            this.correctStrangedoors(blockMap.get(X));
+        }
+        for (int X = 0; X < blockMap.size(); X++) {
+            this.correctStrangedoors(blockMap.get(X));
+        }
 
     } // TODO LATER - Generate Room at a random position and then generate Passage to it
+
+    //Remove all doors who connect three floors
+    public void correctStrangedoors(Block b){
+        int counter = 0;
+        for(int i =0; i <b.doors.size(); i++){
+            counter = 0;
+            if(this.dataTable[b.doors.get(i).posX + 1][b.doors.get(i).posY] == 'F')
+                counter++;
+
+            if(this.dataTable[b.doors.get(i).posX - 1][b.doors.get(i).posY] == 'F')
+                counter++;
+
+            if(this.dataTable[b.doors.get(i).posX][b.doors.get(i).posY + 1] == 'F')
+                counter++;
+
+            if(this.dataTable[b.doors.get(i).posX][b.doors.get(i).posY - 1] == 'F')
+                counter++;
+
+            if(counter >= 3)
+                this.dataTable[b.doors.get(i).posX][b.doors.get(i).posY] = 'F';
+
+        }
+    }
 
     public void fillDataTable(){
         for(int X = 0; X < this.dataTable.length; X++){
