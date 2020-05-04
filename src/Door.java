@@ -1,5 +1,5 @@
 public class Door {
-    boolean isLinked = false;
+    boolean isLinked;
     String direction;
     int posX;
     int posY;
@@ -16,6 +16,7 @@ public class Door {
 
     // Constructor for randomized generation on Block
     Door(boolean isFirstRoom, int X, int Y, int width, int height) {
+        this.isLinked = false;
         // Randomize on which face the door is
         double rand = Math.random();
 

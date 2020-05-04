@@ -187,8 +187,10 @@ public class Dungeon extends JPanel {
             }
         }
         for (int X = 0; X < b.doors.size(); X++){
-            this.dataTable[b.doors.get(X).posX][b.doors.get(X).posY] = 'D';
+            if(this.dataTable[b.doors.get(X).posX][b.doors.get(X).posY] != 'F' && b.doors.get(X).isLinked)
+                this.dataTable[b.doors.get(X).posX][b.doors.get(X).posY] = 'D';
         }
+
     }
 
     // Display the Dungeon tiles as individual pixels on an image and then scale it up

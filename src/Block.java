@@ -104,6 +104,9 @@ public abstract class Block {
         // Randomize the amount of doors
         this.doorCount = randomInt(MIN_DOORS, MAX_DOORS);
 
+        //Door isLinked
+        d.isLinked = true;
+
         // Assign first door with the originating door
         doors.add(d);
 
