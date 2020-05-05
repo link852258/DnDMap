@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Dungeon extends JPanel {
+public class Dungeon {
     // Constants
     private final int MIN_NB_OF_ROOMS;
     private final int MAX_NB_OF_ROOMS;
@@ -263,7 +263,7 @@ public class Dungeon extends JPanel {
             image = bi.getScaledInstance((imageWidth + 10) * scaleNumber, (imageHeight + 10) * scaleNumber, Image.SCALE_SMOOTH);
             // Clip out anything unnecessary
             // g.setClip(this.firstX - 5 * scaleNumber, this.firstY * scaleNumber, imageWidth * scaleNumber, imageHeight * scaleNumber);
-            g.drawImage(image, 0, 0, this);
+            g.drawImage(image, 0, 0, null);
             bi = new BufferedImage((imageWidth + 10) * scaleNumber, (imageHeight + 10) * scaleNumber, BufferedImage.TYPE_INT_ARGB);
             for (int X = 0; X < (imageWidth + 10) * scaleNumber; X++) {
                 for (int Y = 0; Y < (imageHeight + 10) * scaleNumber; Y++) {
@@ -274,7 +274,7 @@ public class Dungeon extends JPanel {
                 }
             }
 
-            g.drawImage(bi, 0, 0, this);
+            g.drawImage(bi, 0, 0, null);
             g.dispose();
             return combined;
         }

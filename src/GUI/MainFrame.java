@@ -45,8 +45,8 @@ public class MainFrame {
         JLabel label = new JLabel(new ImageIcon(bi));
         scrollPane = new JScrollPane();
         scrollPane.setViewportView(label);
-        scrollPane.add(new JLabel("allo"));
         scrollPane.setPreferredSize(new Dimension(2000,2000));
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         scrollPane.setVisible(true);
         mainFrame.add(scrollPane,BorderLayout.CENTER);
     }
