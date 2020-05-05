@@ -23,6 +23,7 @@ public class Menu {
 
     public void createFileMenu(){
         menu.setText("File");
+        createNewItem();
         createOpenItem();
         createSaveItem();
         createExportAsImageItem();
@@ -30,6 +31,24 @@ public class Menu {
         menuBar.add(menu);
     }
 
+    // TODO - Add the capacity to choose the name and the location for the saved files
+    // Create the new dungeon option
+    public void createNewItem(){
+        menuItem = new JMenuItem();
+        menuItem.setText("New Dungeon");
+        menuItem.addActionListener(actionEvent -> {
+            dungeon = new Dungeon(10,15,10);
+            dungeon.generateDungeon();
+            MainFrame.setDungeon(dungeon);
+            MainFrame.removeImage();
+            MainFrame.addImage();
+            MainFrame.reload();
+
+        });
+        menu.add(menuItem);
+    }
+
+    // TODO - Add the capacity to choose the name and the location for the saved files
     // Create the save option
     public void createSaveItem(){
         menuItem = new JMenuItem();
@@ -50,6 +69,7 @@ public class Menu {
         menu.add(menuItem);
     }
 
+    // TODO - Add the capacity to choose the name and the location for the exported files
     // Create the export as image option
     public void createExportAsImageItem(){
         menuItem = new JMenuItem();
@@ -80,6 +100,7 @@ public class Menu {
         this.dungeon = dungeon;
     }
 
+    // TODO - Add the capacity to choose the location of the saved files
     // Create open item option
     public void createOpenItem(){
         menuItem = new JMenuItem();
