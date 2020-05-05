@@ -101,4 +101,12 @@ public class Door {
         }
         return counter;
     }
+
+    public void setDoor(String direction, int posX, int posY, int nextRoomPosX, int nextRoomPosY){
+        this.direction = direction;
+        this.posX = posX;
+        this.posY = posY;
+        this.nextRoomPosX = nextRoomPosX;
+        this.nextRoomPosY = nextRoomPosY;
+    }
 }
