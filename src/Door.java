@@ -1,5 +1,5 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 public class Door {
     boolean isLinked;
@@ -28,65 +28,41 @@ public class Door {
             rand = Math.random();
         }
 
-        boolean isFine = false;
+        boolean isGenerated = false;
         int rand2;
         do {
-            // Generate the door on the Block's face
             if (rand <= 0.25) { // left
-                if (randomInt(0, this.numberDoorsOnSide(doors, "left") * 5) == 0) {
-                    rand = Math.random();
-                    isFine = true;
-                }
-                if (isFine) {
-                    this.direction = "left";
+                if (isDoorGeneratedOnSameSide(doors, "left")) {
+                    isGenerated = true;
                     rand2 = randomInt(0, height - 1); // Takes a random position on the Block's left face
-                    this.posX = X - 1; // One before Block floor
-                    this.posY = Y + rand2;
-                    this.nextRoomPosX = X - 2;
-                    this.nextRoomPosY = Y + rand2;
+                    setDoor("left", X - 1, Y + rand2, X - 2, Y + rand2);
                 }
             } else if (rand <= 0.5) { // up
-                if (randomInt(0, this.numberDoorsOnSide(doors, "up") * 5) == 0) {
-                    rand = Math.random();
-                    isFine = true;
-                }
-                if (isFine) {
-                    direction = "up";
+                if (isDoorGeneratedOnSameSide(doors, "up")) {
+                    isGenerated = true;
                     rand2 = randomInt(0, width - 1);
-                    this.posX = X + rand2;
-                    this.posY = Y - 1;
-                    this.nextRoomPosX = X + rand2;
-                    this.nextRoomPosY = Y - 2;
+                    setDoor("up", X + rand2, Y - 1, X + rand2, Y - 2);
                 }
             } else if (rand <= 0.75) { // right
-                if (randomInt(0, this.numberDoorsOnSide(doors, "right") * 5) == 0) {
-                    rand = Math.random();
-                    isFine = true;
-                }
-                if (isFine) {
-                    direction = "right";
+                if (isDoorGeneratedOnSameSide(doors, "right")) {
+                    isGenerated = true;
                     rand2 = randomInt(0, height - 1);
-                    this.posX = X + width;
-                    this.posY = Y + rand2;
-                    this.nextRoomPosX = X + width + 1;
-                    this.nextRoomPosY = Y + rand2;
+                    setDoor("right", X + width, Y + rand2, X + width + 1, Y + rand2);
                 }
             } else { // down
-                if (randomInt(0, this.numberDoorsOnSide(doors, "down") * 5) == 0) {
-                    rand = Math.random();
-                    isFine = true;
-                }
-                if (isFine) {
-                    direction = "down";
+                if (isDoorGeneratedOnSameSide(doors, "down")) {
+                    isGenerated = true;
                     rand2 = randomInt(0, width - 1);
-                    this.posX = X + rand2;
-                    this.posY = Y + height;
-                    this.nextRoomPosX = X + rand2;
-                    this.nextRoomPosY = Y + height + 1;
+                    setDoor("down", X + rand2, Y + height, X + rand2, Y + height + 1);
                 }
             }
-        } while (!isFine);
+            if(!isGenerated){
+                rand = Math.random();
+            }
+
+        }while (!isGenerated);
     }
+
 
     // Functions
     private int randomInt(int min, int max) {
@@ -94,12 +70,12 @@ public class Door {
     }
 
     private int numberDoorsOnSide(ArrayList<Door> doors, String direction) {
-        int counter = 0;
-        for (int X = 0; X < doors.size(); X++) {
-            if (doors.get(X).direction == direction)
-                counter++;
-        }
-        return counter;
+        Stream<Door> sd = doors.stream();
+        return (int)sd.filter(x -> x.direction.equals(direction)).count();
+    }
+
+    public boolean isDoorGeneratedOnSameSide(ArrayList<Door> doors, String direction){
+        return randomInt(0, this.numberDoorsOnSide(doors, direction) * 5) == 0;
     }
 
     public void setDoor(String direction, int posX, int posY, int nextRoomPosX, int nextRoomPosY){
