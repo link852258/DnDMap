@@ -1,10 +1,12 @@
-import javax.swing.*;
+package Dungeon;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Dungeon {
+public class Dungeon implements Serializable {
     // Constants
     private final int MIN_NB_OF_ROOMS;
     private final int MAX_NB_OF_ROOMS;
@@ -100,7 +102,7 @@ public class Dungeon {
         for (int X = 0; X < blockMap.size(); X++) {
             this.bakeIntoDataTable(blockMap.get(X));
         }
-    } // TODO LATER - Generate Room at a random position and then generate Passage to it
+    } // TODO LATER - Generate Dungeon.Room at a random position and then generate Dungeon.Passage to it
 
     //Remove all doors who connect three floors
     public void correctStrangeDoors(){
@@ -221,7 +223,7 @@ public class Dungeon {
         }
     }
 
-    // Display the Dungeon tiles as individual pixels on an image and then scale it up
+    // Display the Dungeon.Dungeon tiles as individual pixels on an image and then scale it up
     public BufferedImage draw(){
         //super.paintComponent(g);
         if (!blockMap.isEmpty()) {
@@ -275,6 +277,7 @@ public class Dungeon {
 
             g.drawImage(bi, 0, 0, null);
             g.dispose();
+            //this.dataTable = null;
             return combined;
         }
         return null;

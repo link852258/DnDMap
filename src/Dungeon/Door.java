@@ -1,7 +1,10 @@
+package Dungeon;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
-public class Door {
+public class Door implements Serializable {
     boolean isLinked;
     String direction;
     int posX;
@@ -17,7 +20,7 @@ public class Door {
         this.direction = direction;
     }
 
-    // Constructor for randomized generation on Block using existing Block doors
+    // Constructor for randomized generation on Dungeon.Block using existing Dungeon.Block doors
     Door(boolean isFirstRoom, int X, int Y, int width, int height, ArrayList<Door> doors) {
         this.isLinked = false;
         // Randomize on which face the door is
@@ -34,7 +37,7 @@ public class Door {
             if (rand <= 0.25) { // left
                 if (isDoorGeneratedOnSameSide(doors, "left")) {
                     isGenerated = true;
-                    rand2 = randomInt(0, height - 1); // Takes a random position on the Block's left face
+                    rand2 = randomInt(0, height - 1); // Takes a random position on the Dungeon.Block's left face
                     setDoor("left", X - 1, Y + rand2, X - 2, Y + rand2);
                 }
             } else if (rand <= 0.5) { // up

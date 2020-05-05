@@ -1,8 +1,10 @@
-import java.lang.reflect.Array;
+package Dungeon;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class Block {
+public abstract class Block implements Serializable {
     // Constants
     protected final int MIN_HEIGHT;
     protected final int MAX_HEIGHT;
@@ -43,7 +45,7 @@ public abstract class Block {
         this.dataTable = new char[this.width][this.height];
         // Randomize the amount of doors
         this.doorCount = this.randomInt(this.MIN_DOORS+2, this.MAX_DOORS+1);
-        // Set Block original position
+        // Set Dungeon.Block original position
         this.posTopLeftX = dungeonSize/2 + 1;
         this.posTopLeftY = dungeonSize/2 - (Math.floorDiv(this.height, 2)); // TO TEST POSITION
         // Generate it's first entry door on [200, 200]
@@ -53,7 +55,7 @@ public abstract class Block {
         for (int X = 1; X < this.doorCount; X++) {
             this.createDoor(true);
         }
-        // Bake Block into its own dataTable
+        // Bake Dungeon.Block into its own dataTable
         this.bakeIntoDataTable();
     }
 
@@ -71,7 +73,7 @@ public abstract class Block {
         int minimum = 1;
         int maximum = 0;
         // Parse origin-door position minimum and maximum to avoid spillage
-        if (direction == "up" || direction == "down") {
+        if (direction.equals("up") || direction.equals("down")) {
             // Minimum parsing
             if (this.width > space.get("right"))
                 minimum = 1 + (this.width - space.get("right")); // Minimum is the unavailable space
@@ -82,7 +84,7 @@ public abstract class Block {
                 maximum = this.width - (this.width - space.get("left")); // Maximum is random width minus the unavailable place
             else
                 maximum = this.width;
-        } else if (direction == "left" || direction == "right") {
+        } else if (direction.equals("left") || direction.equals("right")) {
             // Minimum parsing
             if (this.height > space.get("down"))
                 minimum = 1 + (this.height - space.get("down"));
@@ -95,7 +97,7 @@ public abstract class Block {
                 maximum = this.height;
         }
 
-        // Randomize the Block positioning bias
+        // Randomize the Dungeon.Block positioning bias
         int bias = randomInt(minimum, maximum);
 
         // Figure out TopLeft tile
@@ -104,7 +106,7 @@ public abstract class Block {
         // Randomize the amount of doors
         this.doorCount = randomInt(MIN_DOORS, MAX_DOORS);
 
-        // Door isLinked
+        // Dungeon.Door isLinked
         d.isLinked = true;
 
         // Assign first door with the originating door
@@ -115,7 +117,7 @@ public abstract class Block {
             this.createDoor(false);
         }
 
-        // Bake Block into its own dataTable
+        // Bake Dungeon.Block into its own dataTable
         this.bakeIntoDataTable();
     }
 
