@@ -21,7 +21,6 @@ public class MainFrame {
         loadJFrame();
         loadJMenuBar();
         loadJPanel();
-
     }
 
     public void show(){

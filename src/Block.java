@@ -51,7 +51,7 @@ public abstract class Block {
         this.doors.add(d);
         // Generate other doors
         for (int X = 1; X < this.doorCount; X++) {
-            this.doors.add(new Door(true, this.posTopLeftX, this.posTopLeftY, this.width, this.height));
+            this.createDoor(true);
         }
         // Bake Block into its own dataTable
         this.bakeIntoDataTable();
@@ -104,20 +104,26 @@ public abstract class Block {
         // Randomize the amount of doors
         this.doorCount = randomInt(MIN_DOORS, MAX_DOORS);
 
-        //Door isLinked
+        // Door isLinked
         d.isLinked = true;
 
         // Assign first door with the originating door
         doors.add(d);
 
         // Generate doors keeping in mind the
-        for (int I = 1; I < doorCount; I++)
-            this.doors.add(new Door(false, this.posTopLeftX, this.posTopLeftY, this.width, this.height));
+        for (int I = 1; I < doorCount; I++) {
+            this.createDoor(false);
+        }
 
         // Bake Block into its own dataTable
         this.bakeIntoDataTable();
     }
 
+    public Door createDoor(boolean isFirstRoom) {
+        Door d = new Door(false, this.posTopLeftX, this.posTopLeftY, this.width, this.height, doors);
+        this.doors.add(d);
+        return d;
+    }
     private void bakeIntoDataTable() {
         for (int X = 0; X < this.width; X++) {
             for (int Y = 0; Y < this.height; Y++) {

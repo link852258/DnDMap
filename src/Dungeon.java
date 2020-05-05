@@ -61,68 +61,68 @@ public class Dungeon {
         Door d;
         HashMap<String, Integer> space;
         do {
-            boolean roomGenerated = false;
-            do {
-                // Get a random door from the queue
-                rand = randomInt(0, unusedDoorQueue.size() - 1);
-                d = unusedDoorQueue.get(rand);
-                // Check if the spot where the new room would be generate already has floor
-                if (this.dataTable[d.nextRoomPosX][d.nextRoomPosY] != 'F') {
-                    b = this.generateBlock("room", d.nextRoomPosX, d.nextRoomPosY, d, d.direction);
+            // Get a random door from the queue
+            rand = randomInt(0, unusedDoorQueue.size() - 1);
+            d = unusedDoorQueue.get(rand);
+            // Check if the spot where the new room would be generate already has floor
+            if (this.dataTable[d.nextRoomPosX][d.nextRoomPosY] != 'F') {
+                b = this.generateBlock("room", d.nextRoomPosX, d.nextRoomPosY, d, d.direction);
 
-                    // Populate the door queue with the new unused doors
-                    this.populateDoorQueue(b, unusedDoorQueue);
+                // Populate the door queue with the new unused doors
+                this.populateDoorQueue(b, unusedDoorQueue);
 
-                    // Generation completed
-                    currentNbOfRooms++;
-
-                    roomGenerated = true;
-                } else {
-                    // Assume the door is taken and remove from queue
-                    // d.isLinked = true;
-                }
-                unusedDoorQueue.remove(rand);
-            } while (!roomGenerated && unusedDoorQueue.size() > 0);
-        } while (currentNbOfRooms < wantedNbOfRooms && unusedDoorQueue.size() > 0);
+                // Generation completed
+                currentNbOfRooms++;
+            }
+            // Remove the door no matter what
+            unusedDoorQueue.remove(rand);
+            // Create door randomly if there are none remaining
+            if(unusedDoorQueue.size() == 0 && currentNbOfRooms < wantedNbOfRooms) {
+                rand = randomInt(0, blockMap.size() - 1);
+                b = blockMap.get(rand);
+                d = b.createDoor(false);
+                unusedDoorQueue.add(d);
+            }
+        } while (currentNbOfRooms < wantedNbOfRooms);
 
         // Delete all remaining non-linked doors
         for (int X = 0; X < blockMap.size(); X++) {
             blockMap.get(X).deleteRemainingDoors();
         }
-        // Because of deletion, redrawing the entire scene is required
+
+        // Change doors which are surrounded by floors into floors
+        // Ran twice to catch doors that are adjacent to other doors
+        this.correctStrangeDoors();
+        this.correctStrangeDoors();
+
+        // Because of deletion/change, redrawing the entire scene is required
         this.fillDataTable();
         for (int X = 0; X < blockMap.size(); X++) {
             this.bakeIntoDataTable(blockMap.get(X));
         }
-        for (int X = 0; X < blockMap.size(); X++) {
-            this.correctStrangedoors(blockMap.get(X));
-        }
-        for (int X = 0; X < blockMap.size(); X++) {
-            this.correctStrangedoors(blockMap.get(X));
-        }
-
     } // TODO LATER - Generate Room at a random position and then generate Passage to it
 
     //Remove all doors who connect three floors
-    public void correctStrangedoors(Block b){
-        int counter = 0;
-        for(int i =0; i <b.doors.size(); i++){
-            counter = 0;
-            if(this.dataTable[b.doors.get(i).posX + 1][b.doors.get(i).posY] == 'F')
-                counter++;
-
-            if(this.dataTable[b.doors.get(i).posX - 1][b.doors.get(i).posY] == 'F')
-                counter++;
-
-            if(this.dataTable[b.doors.get(i).posX][b.doors.get(i).posY + 1] == 'F')
-                counter++;
-
-            if(this.dataTable[b.doors.get(i).posX][b.doors.get(i).posY - 1] == 'F')
-                counter++;
-
-            if(counter >= 3)
-                this.dataTable[b.doors.get(i).posX][b.doors.get(i).posY] = 'F';
-
+    public void correctStrangeDoors(){
+        Block b;
+        Door d;
+        int counter;
+        for (int X = 0; X < blockMap.size(); X++) {
+            b = blockMap.get(X);
+            for (int Y = 0; Y < b.doors.size(); Y++) {
+                counter = 0;
+                d = b.doors.get(Y);
+                if (this.dataTable[d.posX + 1][d.posY] == 'F')
+                    counter++;
+                if (this.dataTable[d.posX - 1][d.posY] == 'F')
+                    counter++;
+                if (this.dataTable[d.posX][d.posY + 1] == 'F')
+                    counter++;
+                if (this.dataTable[d.posX][d.posY - 1] == 'F')
+                    counter++;
+                if (counter >= 3)
+                    b.doors.remove(Y);
+            }
         }
     }
 
@@ -219,7 +219,6 @@ public class Dungeon {
             if(this.dataTable[b.doors.get(X).posX][b.doors.get(X).posY] != 'F' && b.doors.get(X).isLinked)
                 this.dataTable[b.doors.get(X).posX][b.doors.get(X).posY] = 'D';
         }
-
     }
 
     // Display the Dungeon tiles as individual pixels on an image and then scale it up
