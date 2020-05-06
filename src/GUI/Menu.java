@@ -4,6 +4,7 @@ import Dungeon.Dungeon;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
@@ -11,6 +12,7 @@ public class Menu {
     private JMenuBar menuBar;
     private JMenu menu;
     private JMenuItem menuItem;
+    private JFileChooser fileChooser;
     private BufferedImage bi;
     private Dungeon dungeon;
 
@@ -18,6 +20,7 @@ public class Menu {
         menuBar = new JMenuBar();
         menu = new JMenu();
         menuItem = new JMenuItem();
+        fileChooser = new JFileChooser();
         createFileMenu();
     }
 
@@ -31,7 +34,7 @@ public class Menu {
         menuBar.add(menu);
     }
 
-    // TODO - Add the capacity to choose the name and the location for the saved files
+    // TODO - Add the capacity to choose the size of the next dungeon
     // Create the new dungeon option
     public void createNewItem(){
         menuItem = new JMenuItem();
@@ -48,23 +51,12 @@ public class Menu {
         menu.add(menuItem);
     }
 
-    // TODO - Add the capacity to choose the name and the location for the saved files
     // Create the save option
     public void createSaveItem(){
         menuItem = new JMenuItem();
         menuItem.setText("Save");
         menuItem.addActionListener(actionEvent -> {
-            try {
-                FileOutputStream fos = new FileOutputStream("Dungeon.dnd");
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(dungeon);
-                oos.close();
-                fos.close();
-                JOptionPane.showMessageDialog(null,"The map was saved without problem!","Success", JOptionPane.INFORMATION_MESSAGE);
-            }
-            catch (IOException ioe){
-                JOptionPane.showMessageDialog(null, ioe.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
-            }
+            saveFiledialog();
         });
         menu.add(menuItem);
     }
@@ -100,31 +92,12 @@ public class Menu {
         this.dungeon = dungeon;
     }
 
-    // TODO - Add the capacity to choose the location of the saved files
     // Create open item option
     public void createOpenItem(){
         menuItem = new JMenuItem();
         menuItem.setText("Open");
         menuItem.addActionListener(actionEvent -> {
-            try {
-                FileInputStream fis = new FileInputStream("Dungeon.dnd");
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                Dungeon d = (Dungeon)ois.readObject();
-                setDungeon(d);
-                MainFrame.setDungeon(d);
-                MainFrame.removeImage();
-                MainFrame.addImage();
-                MainFrame.reload();
-                ois.close();
-                fis.close();
-                JOptionPane.showMessageDialog(null,"The map was generated without problem!","Success", JOptionPane.INFORMATION_MESSAGE);
-            }
-            catch(IOException ioe){
-                JOptionPane.showMessageDialog(null, ioe.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
-            }
-            catch (ClassNotFoundException cnfe){
-                JOptionPane.showMessageDialog(null, cnfe.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
-            }
+            openFileDialog();
         });
         menu.add(menuItem);
     }
@@ -137,6 +110,54 @@ public class Menu {
             System.exit(0);
         });
         menu.add(menuItem);
+    }
+
+    public void openFileDialog(){
+        fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("DND file","dnd"));
+        int result = fileChooser.showOpenDialog(null);
+            try {
+                if(result == JFileChooser.APPROVE_OPTION) {
+                    File f = fileChooser.getSelectedFile();
+                    FileInputStream fis = new FileInputStream(f.getAbsolutePath());
+                    ObjectInputStream ois = new ObjectInputStream(fis);
+                    Dungeon d = (Dungeon) ois.readObject();
+                    setDungeon(d);
+                    MainFrame.setDungeon(d);
+                    MainFrame.removeImage();
+                    MainFrame.addImage();
+                    MainFrame.reload();
+                    ois.close();
+                    fis.close();
+                    JOptionPane.showMessageDialog(null, "The map was generated without problem!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+            catch(IOException ioe){
+                JOptionPane.showMessageDialog(null, ioe.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+            }
+            catch (ClassNotFoundException cnfe){
+                JOptionPane.showMessageDialog(null, cnfe.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+            }
+    }
+
+    public void saveFiledialog(){
+        fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("DND file","dnd"));
+        int result = fileChooser.showSaveDialog(null);
+        try {
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File f = fileChooser.getSelectedFile();
+                FileOutputStream fos = new FileOutputStream(f.getAbsolutePath()+".dnd");
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(dungeon);
+                oos.close();
+                fos.close();
+                JOptionPane.showMessageDialog(null, "The map was saved without problem!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+        catch (IOException ioe){
+            JOptionPane.showMessageDialog(null, ioe.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public JMenuBar getMenuBar(){
