@@ -1,0 +1,111 @@
+import Dungeon.Dungeon;
+import GUI.MainFrame;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.image.BufferedImage;
+import java.io.*;
+
+public class Controller {
+    private MainFrame mainFrame;
+    private Dungeon dungeon;
+    private JFileChooser fileChooser;
+
+    public Controller(MainFrame mainFrame, Dungeon dungeon){
+        this.mainFrame = mainFrame;
+        this.dungeon = dungeon;
+        this.fileChooser = new JFileChooser();
+        initDungeon();
+    }
+
+    public void initDungeon(){
+        this.dungeon.generateDungeon();
+    }
+
+    public void initController(){
+        mainFrame.getMenu().getMenuItemNewDungeon().addActionListener(actionEvent -> newDungeon());
+        mainFrame.getMenu().getMenuItemOpenDungeon().addActionListener(actionEvent -> openFileDialog());
+        mainFrame.getMenu().getMenuItemSaveDungeon().addActionListener(actionEvent -> saveFiledialog());
+        mainFrame.getMenu().getMenuItemExportDungeon().addActionListener(actionEvent -> exportDungeon());
+        mainFrame.getMenu().getMenuItemQuit().addActionListener(actionEvent -> quit());
+        mainFrame.addImage(dungeon);
+        mainFrame.show();
+    }
+
+    public void newDungeon(){
+        dungeon = new Dungeon(10,15,10);
+        dungeon.generateDungeon();
+        mainFrame.removeImage();
+        mainFrame.addImage(dungeon);
+        mainFrame.reload();
+    }
+
+    public void openFileDialog(){
+        fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("DND file","dnd"));
+        int result = fileChooser.showOpenDialog(null);
+        try {
+            if(result == JFileChooser.APPROVE_OPTION) {
+                File f = fileChooser.getSelectedFile();
+                FileInputStream fis = new FileInputStream(f.getAbsolutePath());
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                dungeon = (Dungeon) ois.readObject();
+                mainFrame.removeImage();
+                mainFrame.addImage(dungeon);
+                mainFrame.reload();
+                ois.close();
+                fis.close();
+                JOptionPane.showMessageDialog(null, "The map was generated without problem!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+        catch(IOException ioe){
+            JOptionPane.showMessageDialog(null, ioe.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+        }
+        catch (ClassNotFoundException cnfe){
+            JOptionPane.showMessageDialog(null, cnfe.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void saveFiledialog(){
+        fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("DND file","dnd"));
+        int result = fileChooser.showSaveDialog(null);
+        try {
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File f = fileChooser.getSelectedFile();
+                FileOutputStream fos = new FileOutputStream(f.getAbsolutePath()+".dnd");
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(dungeon);
+                oos.close();
+                fos.close();
+                JOptionPane.showMessageDialog(null, "The map was saved without problem!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+        catch (IOException ioe){
+            JOptionPane.showMessageDialog(null, ioe.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void exportDungeon(){
+        try {
+            BufferedImage bi = dungeon.draw();
+            File f = new File("allo.jpg");
+            ImageIO.write(bi, "jpg", f);
+            f = new File("allo.gif");
+            ImageIO.write(bi, "gif", f);
+            f = new File("allo.bmp");
+            ImageIO.write(bi, "bmp", f);
+            JOptionPane.showMessageDialog(null,"The map was exported without problem!","Success", JOptionPane.INFORMATION_MESSAGE);
+        }
+        catch (IOException ioe){
+            JOptionPane.showMessageDialog(null,"Error on export","Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void quit(){
+        System.exit(0);
+    }
+
+
+}

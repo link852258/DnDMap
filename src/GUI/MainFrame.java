@@ -7,14 +7,13 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class MainFrame {
-    private static JFrame mainFrame;
+    private  JFrame mainFrame;
     private JMenuBar menuBar;
-    private static Menu menu;
-    private static JLabel label;
-    private static JScrollPane scrollPane;
+    private  Menu menu;
+    private  JLabel label;
+    private  JScrollPane scrollPane;
     private final int WIDTH;
     private final int HEIGHT;
-    private static Dungeon dungeon;
 
     public MainFrame(int width, int height){
         mainFrame = new JFrame("DNDMap");
@@ -26,7 +25,7 @@ public class MainFrame {
         loadJMenuBar();
     }
 
-    public static void show(){
+    public void show(){
         mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         mainFrame.validate();
         mainFrame.repaint();
@@ -34,7 +33,7 @@ public class MainFrame {
         mainFrame.setVisible(true);
     }
 
-    public static void removeImage(){
+    public void removeImage(){
         scrollPane.remove(label);
         mainFrame.remove(scrollPane);
         mainFrame.validate();
@@ -42,7 +41,7 @@ public class MainFrame {
         mainFrame.pack();
     }
 
-    public static void reload(){
+    public void reload(){
         mainFrame.validate();
         mainFrame.repaint();
         mainFrame.pack();
@@ -54,9 +53,8 @@ public class MainFrame {
         mainFrame.setLayout(new BorderLayout());
     }
 
-    public static void addImage(){
+    public void addImage(Dungeon dungeon){
         BufferedImage bi = dungeon.draw();
-        menu.setImage(bi);
         label = new JLabel(new ImageIcon(bi));
         scrollPane = new JScrollPane();
         scrollPane.setViewportView(label);
@@ -71,8 +69,7 @@ public class MainFrame {
         mainFrame.add(menuBar, BorderLayout.NORTH);
     }
 
-    public static void setDungeon(Dungeon dungeon){
-        MainFrame.dungeon = dungeon;
-        menu.setDungeon(dungeon);
+    public Menu getMenu(){
+        return menu;
     }
 }
