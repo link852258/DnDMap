@@ -7,6 +7,7 @@ public class Menu {
     private JMenuBar menuBar;
     private JMenu menu;
     private JMenuItem menuItemNewDungeon;
+    private JMenuItem menuItemFastDungeon;
     private JMenuItem menuItemOpenDungeon;
     private JMenuItem menuItemSaveDungeon;
     private JMenuItem menuItemExportDungeon;
@@ -16,6 +17,7 @@ public class Menu {
         menuBar = new JMenuBar();
         menu = new JMenu();
         menuItemNewDungeon = new JMenuItem();
+        menuItemFastDungeon = new JMenuItem();
         menuItemOpenDungeon = new JMenuItem();
         menuItemSaveDungeon = new JMenuItem();
         menuItemExportDungeon = new JMenuItem();
@@ -26,6 +28,7 @@ public class Menu {
     public void createFileMenu(){
         menu.setText("File");
         createNewItem();
+        createFastItem();
         createOpenItem();
         createSaveItem();
         createExportAsImageItem();
@@ -39,6 +42,13 @@ public class Menu {
         menuItemNewDungeon = new JMenuItem();
         menuItemNewDungeon.setText("New Dungeon");
         menu.add(menuItemNewDungeon);
+    }
+
+    // Create the fast new dungeon option
+    public void createFastItem(){
+        menuItemFastDungeon = new JMenuItem();
+        menuItemFastDungeon.setText("New Fast Dungeon");
+        menu.add(menuItemFastDungeon);
     }
 
     // Create the save option
@@ -77,6 +87,11 @@ public class Menu {
     public JMenuItem getMenuItemNewDungeon(){
         return menuItemNewDungeon;
     }
+
+    public JMenuItem getMenuItemFastDungeon(){
+        return menuItemFastDungeon;
+    }
+
     public JMenuItem getMenuItemOpenDungeon(){
         return menuItemOpenDungeon;
     }

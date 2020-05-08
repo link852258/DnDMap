@@ -225,7 +225,6 @@ public class Dungeon implements Serializable {
 
     // Display the Dungeon.Dungeon tiles as individual pixels on an image and then scale it up
     public BufferedImage draw(){
-        //super.paintComponent(g);
         if (!blockMap.isEmpty()) {
             // Scan the dungeon for sizes
             for (int X = 0; X < dataTable.length; X++) {
@@ -292,5 +291,17 @@ public class Dungeon implements Serializable {
             this.firstY = Y;
         if (Y > this.lastY)
             this.lastY = Y;
+    }
+
+    public int getMIN_NB_OF_ROOMS(){
+        return  MIN_NB_OF_ROOMS;
+    }
+
+    public int getMAX_NB_OF_ROOMS(){
+        return MAX_NB_OF_ROOMS;
+    }
+
+    public int getScaleNumber(){
+        return scaleNumber;
     }
 }

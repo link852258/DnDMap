@@ -7,20 +7,18 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class MainFrame {
-    private  JFrame mainFrame;
+    private JFrame mainFrame;
     private JMenuBar menuBar;
-    private  Menu menu;
-    private  JLabel label;
-    private  JScrollPane scrollPane;
-    private final int WIDTH;
-    private final int HEIGHT;
+    private Menu menu;
+    private JLabel label;
+    private JScrollPane scrollPane;
+    private DungeonSizeFrame dsf;
 
-    public MainFrame(int width, int height){
+    public MainFrame(){
         mainFrame = new JFrame("DNDMap");
         menuBar = new JMenuBar();
+        dsf = new DungeonSizeFrame();
         menu = new Menu();
-        WIDTH = width;
-        HEIGHT = height;
         loadJFrame();
         loadJMenuBar();
     }
@@ -48,13 +46,12 @@ public class MainFrame {
     }
 
     public void loadJFrame(){
-        mainFrame.setSize(WIDTH,HEIGHT);
-        mainFrame.setPreferredSize(new Dimension(WIDTH,HEIGHT));
         mainFrame.setLayout(new BorderLayout());
     }
 
     public void addImage(Dungeon dungeon){
         BufferedImage bi = dungeon.draw();
+        label = null;
         label = new JLabel(new ImageIcon(bi));
         scrollPane = new JScrollPane();
         scrollPane.setViewportView(label);
@@ -71,5 +68,9 @@ public class MainFrame {
 
     public Menu getMenu(){
         return menu;
+    }
+
+    public DungeonSizeFrame getDsf(){
+        return dsf;
     }
 }

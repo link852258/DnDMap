@@ -25,16 +25,30 @@ public class Controller {
 
     public void initController(){
         mainFrame.getMenu().getMenuItemNewDungeon().addActionListener(actionEvent -> newDungeon());
+        mainFrame.getMenu().getMenuItemFastDungeon().addActionListener(actionEvent -> fastDungeon());
         mainFrame.getMenu().getMenuItemOpenDungeon().addActionListener(actionEvent -> openFileDialog());
         mainFrame.getMenu().getMenuItemSaveDungeon().addActionListener(actionEvent -> saveFiledialog());
         mainFrame.getMenu().getMenuItemExportDungeon().addActionListener(actionEvent -> exportDungeon());
         mainFrame.getMenu().getMenuItemQuit().addActionListener(actionEvent -> quit());
+        mainFrame.getDsf().getBtnOK().addActionListener(actionEvent -> createNewDungeon());
+        mainFrame.getDsf().getBtnCancel().addActionListener(actionEvent -> closeDSF());
         mainFrame.addImage(dungeon);
         mainFrame.show();
     }
 
     public void newDungeon(){
-        dungeon = new Dungeon(10,15,10);
+        mainFrame.getDsf().show();
+        mainFrame.removeImage();
+        mainFrame.addImage(dungeon);
+        mainFrame.reload();
+    }
+
+    public void fastDungeon(){
+        int minNbOfRooms = dungeon.getMIN_NB_OF_ROOMS();
+        int maxNbOfRooms = dungeon.getMIN_NB_OF_ROOMS();
+        int scaleNumber = dungeon.getMIN_NB_OF_ROOMS();
+        dungeon = null;
+        dungeon = new Dungeon(minNbOfRooms, maxNbOfRooms, scaleNumber);
         dungeon.generateDungeon();
         mainFrame.removeImage();
         mainFrame.addImage(dungeon);
@@ -74,7 +88,7 @@ public class Controller {
         try {
             if (result == JFileChooser.APPROVE_OPTION) {
                 File f = fileChooser.getSelectedFile();
-                FileOutputStream fos = new FileOutputStream(f.getAbsolutePath()+".dnd");
+                FileOutputStream fos = new FileOutputStream(addExtension(f.getAbsolutePath(),".dnd"));
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 oos.writeObject(dungeon);
                 oos.close();
@@ -88,15 +102,16 @@ public class Controller {
     }
 
     public void exportDungeon(){
+        fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("JPEG file","jpg"));
+        int result = fileChooser.showSaveDialog(null);
         try {
-            BufferedImage bi = dungeon.draw();
-            File f = new File("allo.jpg");
-            ImageIO.write(bi, "jpg", f);
-            f = new File("allo.gif");
-            ImageIO.write(bi, "gif", f);
-            f = new File("allo.bmp");
-            ImageIO.write(bi, "bmp", f);
-            JOptionPane.showMessageDialog(null,"The map was exported without problem!","Success", JOptionPane.INFORMATION_MESSAGE);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                BufferedImage bi = dungeon.draw();
+                File f = new File(addExtension(fileChooser.getSelectedFile().getAbsolutePath(),".jpg"));
+                ImageIO.write(bi, "jpg", f);
+                JOptionPane.showMessageDialog(null, "The map was exported without problem!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
         catch (IOException ioe){
             JOptionPane.showMessageDialog(null,"Error on export","Error", JOptionPane.ERROR_MESSAGE);
@@ -107,5 +122,31 @@ public class Controller {
         System.exit(0);
     }
 
+    // Add the extension if needed
+    public String addExtension(String path, String extension){
+        if(!path.endsWith(extension)){
+            path += extension;
+        }
+        return path;
+    }
+
+    public void createNewDungeon(){
+        int minRoom = convertToInt(mainFrame.getDsf().getTxtWidth());
+        int maxRoom = convertToInt(mainFrame.getDsf().getTxtHeight());
+        int scale = convertToInt(mainFrame.getDsf().getTxtScale());
+        dungeon = null;
+        dungeon = new Dungeon(minRoom, maxRoom, scale);
+        dungeon.generateDungeon();
+        closeDSF();
+    }
+
+    public void closeDSF(){
+        mainFrame.getDsf().close();
+    }
+
+    public int convertToInt(String information){
+        int info = Integer.parseInt(information);
+        return info;
+    }
 
 }
