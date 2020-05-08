@@ -46,7 +46,7 @@ public class Controller {
     public void fastDungeon(){
         int minNbOfRooms = dungeon.getMIN_NB_OF_ROOMS();
         int maxNbOfRooms = dungeon.getMIN_NB_OF_ROOMS();
-        int scaleNumber = dungeon.getMIN_NB_OF_ROOMS();
+        int scaleNumber = dungeon.getScaleNumber();
         dungeon = null;
         dungeon = new Dungeon(minNbOfRooms, maxNbOfRooms, scaleNumber);
         dungeon.generateDungeon();
