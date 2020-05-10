@@ -6,8 +6,8 @@ import java.awt.*;
 public class DungeonSizeFrame {
     private JDialog frame;
     private JPanel panel;
-    private JLabel lblWidth, lblHeight, lblScale;
-    private JTextField txtWidth, txtHeight, txtScale;
+    private JLabel lblWidth, lblHeight, lblScale, lblSizeRatio;
+    private JTextField txtWidth, txtHeight, txtScale, txtSizeRatio;
     private JButton btnOK, btnCancel;
 
     public DungeonSizeFrame(){
@@ -16,16 +16,18 @@ public class DungeonSizeFrame {
         lblWidth = new JLabel("Min number of rooms");
         lblHeight = new JLabel("Max number of rooms");
         lblScale = new JLabel("Scale");
+        lblSizeRatio = new JLabel("Table size ratio");
         txtWidth = new JTextField();
         txtHeight = new JTextField();
         txtScale = new JTextField();
+        txtSizeRatio = new JTextField();
         btnOK = new JButton("OK");
         btnCancel = new JButton("Cancel");
         init();
     }
 
     public void init(){
-        panel.setLayout(new GridLayout(4,2));
+        panel.setLayout(new GridLayout(5,2));
         panel.setPreferredSize(new Dimension(400,200));
         panel.add(lblWidth);
         panel.add(txtWidth);
@@ -33,6 +35,8 @@ public class DungeonSizeFrame {
         panel.add(txtHeight);
         panel.add(lblScale);
         panel.add(txtScale);
+        panel.add(lblSizeRatio);
+        panel.add(txtSizeRatio);
         panel.add(btnOK);
         panel.add(btnCancel);
         frame.setTitle("Spec of room");
@@ -65,6 +69,8 @@ public class DungeonSizeFrame {
     public String getTxtScale(){
         return txtScale.getText();
     }
+
+    public String getTxtSizeRatio() { return txtSizeRatio.getText(); }
 
     public JButton getBtnOK() {
         return btnOK;

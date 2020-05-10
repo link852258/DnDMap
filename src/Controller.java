@@ -47,8 +47,9 @@ public class Controller {
         int minNbOfRooms = dungeon.getMIN_NB_OF_ROOMS();
         int maxNbOfRooms = dungeon.getMAX_NB_OF_ROOMS();
         int scaleNumber = dungeon.getScaleNumber();
+        int sizeRatio = dungeon.getDUNGEON_SIZE_RATIO();
         dungeon = null;
-        dungeon = new Dungeon(minNbOfRooms, maxNbOfRooms, scaleNumber);
+        dungeon = new Dungeon(minNbOfRooms, maxNbOfRooms, scaleNumber, sizeRatio);
         dungeon.generateDungeon();
         mainFrame.removeImage();
         mainFrame.addImage(dungeon);
@@ -103,13 +104,13 @@ public class Controller {
 
     public void exportDungeon(){
         fileChooser = new JFileChooser();
-        fileChooser.setFileFilter(new FileNameExtensionFilter("JPEG file","jpg"));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("BMP file","bmp"));
         int result = fileChooser.showSaveDialog(null);
         try {
             if (result == JFileChooser.APPROVE_OPTION) {
                 BufferedImage bi = dungeon.draw();
-                File f = new File(addExtension(fileChooser.getSelectedFile().getAbsolutePath(),".jpg"));
-                ImageIO.write(bi, "jpg", f);
+                File f = new File(addExtension(fileChooser.getSelectedFile().getAbsolutePath(),".bmp"));
+                ImageIO.write(bi, "bmp", f);
                 JOptionPane.showMessageDialog(null, "The map was exported without problem!", "Success", JOptionPane.INFORMATION_MESSAGE);
             }
         }
@@ -134,8 +135,9 @@ public class Controller {
         int minRoom = convertToInt(mainFrame.getDsf().getTxtWidth());
         int maxRoom = convertToInt(mainFrame.getDsf().getTxtHeight());
         int scale = convertToInt(mainFrame.getDsf().getTxtScale());
+        int sizeRatio = convertToInt(mainFrame.getDsf().getTxtSizeRatio());
         dungeon = null;
-        dungeon = new Dungeon(minRoom, maxRoom, scale);
+        dungeon = new Dungeon(minRoom, maxRoom, scale, sizeRatio);
         dungeon.generateDungeon();
         closeDSF();
     }

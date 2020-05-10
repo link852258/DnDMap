@@ -10,12 +10,13 @@ public class Dungeon implements Serializable {
     // Constants
     private final int MIN_NB_OF_ROOMS;
     private final int MAX_NB_OF_ROOMS;
+    private final int DUNGEON_SIZE_RATIO;
     private static final String DUNGEON_NAME = "Default";
     private static final String DUNGEON_TYPE = "2D";
     private static final int RGB_FLOOR = new Color(98, 137, 90).getRGB();
     private static final int RGB_GRID = new Color(45, 45, 45).getRGB();
     private static final int RGB_DOOR = new Color(151, 97, 67).getRGB();
-    private static final int DUNGEON_SIZE_RATIO = 20;
+
 
     // Variables
     private char[][] dataTable;
@@ -27,10 +28,11 @@ public class Dungeon implements Serializable {
     private int lastY;
 
     // Functions
-    public Dungeon(int minRooms, int maxRooms, int scale){
+    public Dungeon(int minRooms, int maxRooms, int scale, int sizeRatio){
         // Constants
         MIN_NB_OF_ROOMS = minRooms;
         MAX_NB_OF_ROOMS = maxRooms;
+        DUNGEON_SIZE_RATIO = sizeRatio;
 
         // Variables
         scaleNumber = scale;
@@ -304,4 +306,6 @@ public class Dungeon implements Serializable {
     public int getScaleNumber(){
         return scaleNumber;
     }
+
+    public int getDUNGEON_SIZE_RATIO() { return DUNGEON_SIZE_RATIO; }
 }
