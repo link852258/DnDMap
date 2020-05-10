@@ -138,9 +138,6 @@ public class Dungeon implements Serializable {
 
     //Remove all doors who connect three floors
     public void fillInside(){
-        Block b;
-        Door d;
-        int counter;
         for (int X = 2; X < this.dataTable.length - 2; X++) {
             for (int Y = 2; Y < this.dataTable[0].length - 2; Y++) {
                 if     ((this.dataTable[X + 1][Y] == 'F' && this.dataTable[X - 1][Y] == 'F') || // If floor on left/right
