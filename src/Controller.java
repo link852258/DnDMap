@@ -137,6 +137,7 @@ public class Controller {
     }
 
     public void createNewDungeon(){
+        mainFrame.getMenu().getChkMenuItemGridIsOn().setSelected(mainFrame.getDsf().getChkGridOnOff().isSelected());
         int minRoom = convertToInt(mainFrame.getDsf().getTxtWidth());
         int maxRoom = convertToInt(mainFrame.getDsf().getTxtHeight());
         int scale = convertToInt(mainFrame.getDsf().getTxtScale());
