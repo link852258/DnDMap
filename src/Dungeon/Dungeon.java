@@ -105,6 +105,11 @@ public class Dungeon implements Serializable {
         for (int X = 0; X < blockMap.size(); X++) {
             this.bakeIntoDataTable(blockMap.get(X));
         }
+
+        if (1 == 2) {
+            this.fillInside();
+            this.fillInside();
+        }
     } // TODO LATER - Generate Dungeon.Room at a random position and then generate Dungeon.Passage to it
 
     //Remove all doors who connect three floors
@@ -127,6 +132,20 @@ public class Dungeon implements Serializable {
                     counter++;
                 if (counter >= 3)
                     b.doors.remove(Y);
+            }
+        }
+    }
+
+    //Remove all doors who connect three floors
+    public void fillInside(){
+        Block b;
+        Door d;
+        int counter;
+        for (int X = 2; X < this.dataTable.length - 2; X++) {
+            for (int Y = 2; Y < this.dataTable[0].length - 2; Y++) {
+                if     ((this.dataTable[X + 1][Y] == 'F' && this.dataTable[X - 1][Y] == 'F') || // If floor on left/right
+                        (this.dataTable[X][Y + 1] == 'F' && this.dataTable[X][Y - 1] == 'F')) // If floor on up/down
+                    this.dataTable[X][Y] = 'F';
             }
         }
     }
