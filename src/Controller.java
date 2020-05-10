@@ -104,13 +104,13 @@ public class Controller {
 
     public void exportDungeon(){
         fileChooser = new JFileChooser();
-        fileChooser.setFileFilter(new FileNameExtensionFilter("BMP file","bmp"));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("PNG file","png"));
         int result = fileChooser.showSaveDialog(null);
         try {
             if (result == JFileChooser.APPROVE_OPTION) {
                 BufferedImage bi = dungeon.draw();
-                File f = new File(addExtension(fileChooser.getSelectedFile().getAbsolutePath(),".bmp"));
-                ImageIO.write(bi, "bmp", f);
+                File f = new File(addExtension(fileChooser.getSelectedFile().getAbsolutePath(),".png"));
+                ImageIO.write(bi, "png", f);
                 JOptionPane.showMessageDialog(null, "The map was exported without problem!", "Success", JOptionPane.INFORMATION_MESSAGE);
             }
         }
