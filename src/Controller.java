@@ -32,15 +32,19 @@ public class Controller {
         mainFrame.getMenu().getMenuItemQuit().addActionListener(actionEvent -> quit());
         mainFrame.getDsf().getBtnOK().addActionListener(actionEvent -> createNewDungeon());
         mainFrame.getDsf().getBtnCancel().addActionListener(actionEvent -> closeDSF());
+        mainFrame.getMenu().getChkMenuItemGridIsOn().addActionListener(actionEvent -> {
+            mainFrame.getDsf().getChkGridOnOff().setSelected(mainFrame.getMenu().getChkMenuItemGridIsOn().isSelected());
+            mainFrame.removeImage();
+            mainFrame.addImage(dungeon, isGridOn());
+            mainFrame.reload();
+        });
         mainFrame.addImage(dungeon, mainFrame.getDsf().getChkGridOnOff().isSelected());
         mainFrame.show();
     }
 
     public void newDungeon(){
+
         mainFrame.getDsf().show();
-        mainFrame.removeImage();
-        mainFrame.addImage(dungeon, mainFrame.getDsf().getChkGridOnOff().isSelected());
-        mainFrame.reload();
     }
 
     public void fastDungeon(){
@@ -48,11 +52,12 @@ public class Controller {
         int maxNbOfRooms = dungeon.getMAX_NB_OF_ROOMS();
         int scaleNumber = dungeon.getScaleNumber();
         int sizeRatio = dungeon.getDUNGEON_SIZE_RATIO();
+        boolean isWorldMap = dungeon.getIsWorldMap();
         dungeon = null;
-        dungeon = new Dungeon(minNbOfRooms, maxNbOfRooms, scaleNumber, sizeRatio);
+        dungeon = new Dungeon(minNbOfRooms, maxNbOfRooms, scaleNumber, sizeRatio, isWorldMap);
         dungeon.generateDungeon();
         mainFrame.removeImage();
-        mainFrame.addImage(dungeon, mainFrame.getDsf().getChkGridOnOff().isSelected());
+        mainFrame.addImage(dungeon, isGridOn());
         mainFrame.reload();
     }
 
@@ -67,7 +72,7 @@ public class Controller {
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 dungeon = (Dungeon) ois.readObject();
                 mainFrame.removeImage();
-                mainFrame.addImage(dungeon, mainFrame.getDsf().getChkGridOnOff().isSelected());
+                mainFrame.addImage(dungeon, true);
                 mainFrame.reload();
                 ois.close();
                 fis.close();
@@ -108,7 +113,7 @@ public class Controller {
         int result = fileChooser.showSaveDialog(null);
         try {
             if (result == JFileChooser.APPROVE_OPTION) {
-                BufferedImage bi = dungeon.draw(mainFrame.getDsf().getChkGridOnOff().isSelected());
+                BufferedImage bi = dungeon.draw(isGridOn());
                 File f = new File(addExtension(fileChooser.getSelectedFile().getAbsolutePath(),".png"));
                 ImageIO.write(bi, "png", f);
                 JOptionPane.showMessageDialog(null, "The map was exported without problem!", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -136,10 +141,14 @@ public class Controller {
         int maxRoom = convertToInt(mainFrame.getDsf().getTxtHeight());
         int scale = convertToInt(mainFrame.getDsf().getTxtScale());
         int sizeRatio = convertToInt(mainFrame.getDsf().getTxtSizeRatio());
+        boolean isWorldMap = dungeon.getIsWorldMap();
         dungeon = null;
-        dungeon = new Dungeon(minRoom, maxRoom, scale, sizeRatio);
+        dungeon = new Dungeon(minRoom, maxRoom, scale, sizeRatio, isWorldMap);
         dungeon.generateDungeon();
         closeDSF();
+        mainFrame.removeImage();
+        mainFrame.addImage(dungeon, mainFrame.getDsf().getChkGridOnOff().isSelected());
+        mainFrame.reload();
     }
 
     public void closeDSF(){
@@ -149,6 +158,10 @@ public class Controller {
     public int convertToInt(String information){
         int info = Integer.parseInt(information);
         return info;
+    }
+
+    public boolean isGridOn(){
+        return mainFrame.getMenu().getChkMenuItemGridIsOn().isSelected();
     }
 
 }

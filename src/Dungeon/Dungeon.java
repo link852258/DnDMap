@@ -26,13 +26,15 @@ public class Dungeon implements Serializable {
     private int firstY;
     private int lastX;
     private int lastY;
+    private boolean isWorldMap;
 
     // Functions
-    public Dungeon(int minRooms, int maxRooms, int scale, int sizeRatio){
+    public Dungeon(int minRooms, int maxRooms, int scale, int sizeRatio, boolean isWorldMap){
         // Constants
         MIN_NB_OF_ROOMS = minRooms;
         MAX_NB_OF_ROOMS = maxRooms;
         DUNGEON_SIZE_RATIO = sizeRatio;
+        this.isWorldMap = isWorldMap;
 
         // Variables
         scaleNumber = scale;
@@ -106,7 +108,7 @@ public class Dungeon implements Serializable {
             this.bakeIntoDataTable(blockMap.get(X));
         }
 
-        if (1 == 2) {
+        if (isWorldMap) {
             this.fillInside();
             this.fillInside();
         }
@@ -329,4 +331,8 @@ public class Dungeon implements Serializable {
     }
 
     public int getDUNGEON_SIZE_RATIO() { return DUNGEON_SIZE_RATIO; }
+
+    public boolean getIsWorldMap() {
+        return isWorldMap;
+    }
 }

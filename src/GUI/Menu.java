@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 public class Menu {
     private JMenuBar menuBar;
     private JMenu menu;
+    private JCheckBoxMenuItem chkMenuItemGridIsOn;
     private JMenuItem menuItemNewDungeon;
     private JMenuItem menuItemFastDungeon;
     private JMenuItem menuItemOpenDungeon;
@@ -22,10 +23,21 @@ public class Menu {
         menuItemSaveDungeon = new JMenuItem();
         menuItemExportDungeon = new JMenuItem();
         menuItemQuit = new JMenuItem();
+        chkMenuItemGridIsOn = new JCheckBoxMenuItem();
         createFileMenu();
+        createOptionMenu();
+    }
+
+    public void createOptionMenu(){
+        menu = new JMenu();
+        menu.setText("Option");
+        createGridOption();
+        menuBar.add(menu);
+
     }
 
     public void createFileMenu(){
+        menu = new JMenu();
         menu.setText("File");
         createNewItem();
         createFastItem();
@@ -36,7 +48,6 @@ public class Menu {
         menuBar.add(menu);
     }
 
-    // TODO - Add the capacity to choose the size of the next dungeon
     // Create the new dungeon option
     public void createNewItem(){
         menuItemNewDungeon = new JMenuItem();
@@ -58,7 +69,6 @@ public class Menu {
         menu.add(menuItemSaveDungeon);
     }
 
-    // TODO - Add the capacity to choose the name and the location for the exported files
     // Create the export as image option
     public void createExportAsImageItem(){
         menuItemExportDungeon = new JMenuItem();
@@ -78,6 +88,13 @@ public class Menu {
         menuItemQuit = new JMenuItem();
         menuItemQuit.setText("Quit");
         menu.add(menuItemQuit);
+    }
+
+    public void createGridOption(){
+        chkMenuItemGridIsOn = new JCheckBoxMenuItem();
+        chkMenuItemGridIsOn.setText("isGridOn");
+        chkMenuItemGridIsOn.setSelected(true);
+        menu.add(chkMenuItemGridIsOn);
     }
 
     public JMenuBar getMenuBar(){
@@ -106,5 +123,9 @@ public class Menu {
 
     public JMenuItem getMenuItemQuit() {
         return menuItemQuit;
+    }
+
+    public JCheckBoxMenuItem getChkMenuItemGridIsOn(){
+        return  chkMenuItemGridIsOn;
     }
 }
