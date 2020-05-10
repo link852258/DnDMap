@@ -13,10 +13,10 @@ public class Dungeon implements Serializable {
     private final int DUNGEON_SIZE_RATIO;
     private static final String DUNGEON_NAME = "Default";
     private static final String DUNGEON_TYPE = "2D";
-    private static final int RGB_FLOOR = new Color(98, 137, 90).getRGB();
+    private static final int RGB_FLOOR = new Color(77, 120, 67).getRGB();
     private static final int RGB_GRID = new Color(45, 45, 45).getRGB();
     private static final int RGB_DOOR = new Color(151, 97, 67).getRGB();
-
+    private static final int RGB_REST = new Color(64, 165, 146).getRGB();
 
     // Variables
     private char[][] dataTable;
@@ -81,11 +81,12 @@ public class Dungeon implements Serializable {
             // Remove the door no matter what
             unusedDoorQueue.remove(rand);
             // Create door randomly if there are none remaining
-            if(unusedDoorQueue.size() == 0 && currentNbOfRooms < wantedNbOfRooms) {
+            while (unusedDoorQueue.size() == 0 && currentNbOfRooms < wantedNbOfRooms) {
                 rand = randomInt(0, blockMap.size() - 1);
                 b = blockMap.get(rand);
                 d = b.createDoor(false);
-                unusedDoorQueue.add(d);
+                if (d != null)
+                    unusedDoorQueue.add(d);
             }
         } while (currentNbOfRooms < wantedNbOfRooms);
 
@@ -254,6 +255,8 @@ public class Dungeon implements Serializable {
                         bi.setRGB(counterX, counterY, RGB_FLOOR);
                     } else if (dataTable[X][Y] == 'D') {
                         bi.setRGB(counterX, counterY, RGB_DOOR);
+                    } else {
+                        bi.setRGB(counterX, counterY, RGB_REST);
                     }
                     counterY++;
                 }

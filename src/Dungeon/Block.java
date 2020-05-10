@@ -21,6 +21,7 @@ public abstract class Block implements Serializable {
     int doorCount;
     int width;
     int height;
+    boolean isEligibleForMoreDoors = true;
 
     Block(int minHeight, int maxHeight, int minWidth, int maxWidth, int minDoors, int maxDoors){
         MIN_HEIGHT = minHeight;
@@ -53,7 +54,7 @@ public abstract class Block implements Serializable {
         this.doors.add(d);
         // Generate other doors
         for (int X = 1; X < this.doorCount; X++) {
-            this.createDoor(true);
+            this.createDoorWithoutCheckingForElegibility(true);
         }
         // Bake Dungeon.Block into its own dataTable
         this.bakeIntoDataTable();
@@ -114,7 +115,7 @@ public abstract class Block implements Serializable {
 
         // Generate doors keeping in mind the
         for (int I = 1; I < doorCount; I++) {
-            this.createDoor(false);
+            this.createDoorWithoutCheckingForElegibility(false);
         }
 
         // Bake Dungeon.Block into its own dataTable
@@ -122,10 +123,24 @@ public abstract class Block implements Serializable {
     }
 
     public Door createDoor(boolean isFirstRoom) {
+        Door d;
+        if (this.isEligibleForMoreDoors) {
+            d = new Door(false, this.posTopLeftX, this.posTopLeftY, this.width, this.height, doors);
+            this.doors.add(d);
+            this.checkIfBlockEligibleForMoreDoors();
+            return d;
+        } else {
+            return null;
+        }
+    }
+
+    public Door createDoorWithoutCheckingForElegibility(boolean isFirstRoom) {
         Door d = new Door(false, this.posTopLeftX, this.posTopLeftY, this.width, this.height, doors);
         this.doors.add(d);
+        this.checkIfBlockEligibleForMoreDoors();
         return d;
     }
+
     private void bakeIntoDataTable() {
         for (int X = 0; X < this.width; X++) {
             for (int Y = 0; Y < this.height; Y++) {
@@ -153,6 +168,25 @@ public abstract class Block implements Serializable {
                 posTopLeftY = Y;
                 break;
         }
+    }
+
+    public void checkIfBlockEligibleForMoreDoors() {
+        boolean isThereDoorLeft = false;
+        boolean isThereDoorUp = false;
+        boolean isThereDoorRight = false;
+        boolean isThereDoorDown = false;
+        for (int X = 0; X < doors.size(); X++) {
+            if (doors.get(X).direction == "left")
+                isThereDoorLeft = true;
+            else if (doors.get(X).direction == "up")
+                isThereDoorUp = true;
+            else if (doors.get(X).direction == "right")
+                isThereDoorRight = true;
+            else if (doors.get(X).direction == "down")
+                isThereDoorDown = true;
+        }
+        if (isThereDoorDown && isThereDoorLeft && isThereDoorRight && isThereDoorUp)
+            this.isEligibleForMoreDoors = false;
     }
 
     public void deleteRemainingDoors() {
