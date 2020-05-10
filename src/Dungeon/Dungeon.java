@@ -226,7 +226,7 @@ public class Dungeon implements Serializable {
     }
 
     // Display the Dungeon.Dungeon tiles as individual pixels on an image and then scale it up
-    public BufferedImage draw(){
+    public BufferedImage draw(boolean isGridOn){
         if (!blockMap.isEmpty()) {
             // Scan the dungeon for sizes
             for (int X = 0; X < dataTable.length; X++) {
@@ -266,17 +266,19 @@ public class Dungeon implements Serializable {
             // Clip out anything unnecessary
             // g.setClip(this.firstX - 5 * scaleNumber, this.firstY * scaleNumber, imageWidth * scaleNumber, imageHeight * scaleNumber);
             g.drawImage(image, 0, 0, null);
-            bi = new BufferedImage((imageWidth + 10) * scaleNumber, (imageHeight + 10) * scaleNumber, BufferedImage.TYPE_INT_ARGB);
-            for (int X = 0; X < (imageWidth + 10) * scaleNumber; X++) {
-                for (int Y = 0; Y < (imageHeight + 10) * scaleNumber; Y++) {
-                    if ((X % scaleNumber) == 0)
-                        bi.setRGB(X, Y, RGB_GRID);
-                    if ((Y % scaleNumber) == 0)
-                        bi.setRGB(X, Y, RGB_GRID);
+            if(isGridOn) {
+                bi = new BufferedImage((imageWidth + 10) * scaleNumber, (imageHeight + 10) * scaleNumber, BufferedImage.TYPE_INT_ARGB);
+                for (int X = 0; X < (imageWidth + 10) * scaleNumber; X++) {
+                    for (int Y = 0; Y < (imageHeight + 10) * scaleNumber; Y++) {
+                        if ((X % scaleNumber) == 0)
+                            bi.setRGB(X, Y, RGB_GRID);
+                        if ((Y % scaleNumber) == 0)
+                            bi.setRGB(X, Y, RGB_GRID);
+                    }
                 }
-            }
 
-            g.drawImage(bi, 0, 0, null);
+                g.drawImage(bi, 0, 0, null);
+            }
             g.dispose();
             //this.dataTable = null;
             return combined;

@@ -6,8 +6,9 @@ import java.awt.*;
 public class DungeonSizeFrame {
     private JDialog frame;
     private JPanel panel;
-    private JLabel lblWidth, lblHeight, lblScale, lblSizeRatio;
+    private JLabel lblWidth, lblHeight, lblScale, lblSizeRatio, lblGridOnOff;
     private JTextField txtWidth, txtHeight, txtScale, txtSizeRatio;
+    private JCheckBox chkGridOnOff;
     private JButton btnOK, btnCancel;
 
     public DungeonSizeFrame(){
@@ -17,17 +18,19 @@ public class DungeonSizeFrame {
         lblHeight = new JLabel("Max number of rooms");
         lblScale = new JLabel("Scale");
         lblSizeRatio = new JLabel("Table size ratio");
+        lblGridOnOff = new JLabel("Grid is on");
         txtWidth = new JTextField();
         txtHeight = new JTextField();
         txtScale = new JTextField();
         txtSizeRatio = new JTextField();
+        chkGridOnOff = new JCheckBox();
         btnOK = new JButton("OK");
         btnCancel = new JButton("Cancel");
         init();
     }
 
     public void init(){
-        panel.setLayout(new GridLayout(5,2));
+        panel.setLayout(new GridLayout(6,2));
         panel.setPreferredSize(new Dimension(400,200));
         panel.add(lblWidth);
         panel.add(txtWidth);
@@ -37,6 +40,9 @@ public class DungeonSizeFrame {
         panel.add(txtScale);
         panel.add(lblSizeRatio);
         panel.add(txtSizeRatio);
+        panel.add(lblGridOnOff);
+        chkGridOnOff.setSelected(true);
+        panel.add(chkGridOnOff);
         panel.add(btnOK);
         panel.add(btnCancel);
         frame.setTitle("Spec of room");
@@ -78,5 +84,9 @@ public class DungeonSizeFrame {
 
     public JButton getBtnCancel(){
         return btnCancel;
+    }
+
+    public JCheckBox getChkGridOnOff(){
+        return chkGridOnOff;
     }
 }

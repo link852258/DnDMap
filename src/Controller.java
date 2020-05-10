@@ -27,19 +27,19 @@ public class Controller {
         mainFrame.getMenu().getMenuItemNewDungeon().addActionListener(actionEvent -> newDungeon());
         mainFrame.getMenu().getMenuItemFastDungeon().addActionListener(actionEvent -> fastDungeon());
         mainFrame.getMenu().getMenuItemOpenDungeon().addActionListener(actionEvent -> openFileDialog());
-        mainFrame.getMenu().getMenuItemSaveDungeon().addActionListener(actionEvent -> saveFiledialog());
+        mainFrame.getMenu().getMenuItemSaveDungeon().addActionListener(actionEvent -> saveFileDialog());
         mainFrame.getMenu().getMenuItemExportDungeon().addActionListener(actionEvent -> exportDungeon());
         mainFrame.getMenu().getMenuItemQuit().addActionListener(actionEvent -> quit());
         mainFrame.getDsf().getBtnOK().addActionListener(actionEvent -> createNewDungeon());
         mainFrame.getDsf().getBtnCancel().addActionListener(actionEvent -> closeDSF());
-        mainFrame.addImage(dungeon);
+        mainFrame.addImage(dungeon, mainFrame.getDsf().getChkGridOnOff().isSelected());
         mainFrame.show();
     }
 
     public void newDungeon(){
         mainFrame.getDsf().show();
         mainFrame.removeImage();
-        mainFrame.addImage(dungeon);
+        mainFrame.addImage(dungeon, mainFrame.getDsf().getChkGridOnOff().isSelected());
         mainFrame.reload();
     }
 
@@ -52,7 +52,7 @@ public class Controller {
         dungeon = new Dungeon(minNbOfRooms, maxNbOfRooms, scaleNumber, sizeRatio);
         dungeon.generateDungeon();
         mainFrame.removeImage();
-        mainFrame.addImage(dungeon);
+        mainFrame.addImage(dungeon, mainFrame.getDsf().getChkGridOnOff().isSelected());
         mainFrame.reload();
     }
 
@@ -67,7 +67,7 @@ public class Controller {
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 dungeon = (Dungeon) ois.readObject();
                 mainFrame.removeImage();
-                mainFrame.addImage(dungeon);
+                mainFrame.addImage(dungeon, mainFrame.getDsf().getChkGridOnOff().isSelected());
                 mainFrame.reload();
                 ois.close();
                 fis.close();
@@ -82,7 +82,7 @@ public class Controller {
         }
     }
 
-    public void saveFiledialog(){
+    public void saveFileDialog(){
         fileChooser = new JFileChooser();
         fileChooser.setFileFilter(new FileNameExtensionFilter("DND file","dnd"));
         int result = fileChooser.showSaveDialog(null);
@@ -108,7 +108,7 @@ public class Controller {
         int result = fileChooser.showSaveDialog(null);
         try {
             if (result == JFileChooser.APPROVE_OPTION) {
-                BufferedImage bi = dungeon.draw();
+                BufferedImage bi = dungeon.draw(mainFrame.getDsf().getChkGridOnOff().isSelected());
                 File f = new File(addExtension(fileChooser.getSelectedFile().getAbsolutePath(),".png"));
                 ImageIO.write(bi, "png", f);
                 JOptionPane.showMessageDialog(null, "The map was exported without problem!", "Success", JOptionPane.INFORMATION_MESSAGE);

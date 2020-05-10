@@ -49,8 +49,8 @@ public class MainFrame {
         mainFrame.setLayout(new BorderLayout());
     }
 
-    public void addImage(Dungeon dungeon){
-        BufferedImage bi = dungeon.draw();
+    public void addImage(Dungeon dungeon, Boolean isGridOn){
+        BufferedImage bi = dungeon.draw(isGridOn);
         label = null;
         label = new JLabel(new ImageIcon(bi));
         scrollPane = new JScrollPane();
